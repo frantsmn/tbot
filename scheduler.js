@@ -1,0 +1,90 @@
+const schedule = require('node-schedule');
+const logger = require('./logger');
+const bot = require('./app').bot;
+
+const Mts = require('./model/mts');
+const Beltelecom = require('./model/beltelecom');
+
+//
+//#region BALANCE REMINDERS
+
+async function balanceReminders() {
+    logger.log(`⌛ [scheduler] >> balanceReminders()`);
+    Mts.getAllWarningMessagesFirestore()
+        .then(messages => messages.forEach(m => bot.sendMessage(m.id, m.text, m.options)));
+    Beltelecom.getAllWarningMessagesFirestore()
+        .then(messages => messages.forEach(m => bot.sendMessage(m.id, m.text, m.options)));
+    logger.log(`⌛ [scheduler] balanceReminders() >>`);
+}
+
+schedule.scheduleJob({ hour: 13, minute: 05 }, balanceReminders);
+
+//#endregion
+//
+
+
+//
+//#region UPDATE ACCOUNTS
+
+async function updateAccounts() {
+    logger.log(`⌛ [scheduler] >> updateAccounts()`);
+    await Mts.updateAllAccounts();
+    await Beltelecom.updateAllAccounts();
+    logger.log(`⌛ [scheduler] updateAccounts() >>`);
+}
+
+schedule.scheduleJob({ hour: 05, minute: 30 }, updateAccounts);
+schedule.scheduleJob({ hour: 17, minute: 30 }, updateAccounts);
+
+//#endregion
+//
+
+
+//
+//#region REMINDERS
+
+// function workdayEnd() {
+
+//     function getRandomInt(max) {
+//         return Math.floor(Math.random() * Math.floor(max));
+//     }
+
+//     switch (getRandomInt(4)) {
+//         case 0:
+//             bot.sendMessage(ADMIN_ID, `🐸 Наработался?! 👨‍💻\nА теперь домой!`);
+//             break;
+//         case 1:
+//             bot.sendMessage(ADMIN_ID, `🐸 Беги отсюда! 🏃\nБеги Форест, беги!`);
+//             break;
+//         case 2:
+//             bot.sendMessage(ADMIN_ID, `🐸 Харош сидеть! 🪑\nВали жить для себя!`);
+//             break;
+//         case 3:
+//             bot.sendMessage(ADMIN_ID, `🐸 Конец рабочего дня! 🎉\nПора отдыхать!`);
+//             break;
+//         default: break;
+//     }
+
+// }
+
+// schedule.scheduleJob({ dayOfWeek: [new schedule.Range(1, 5)], hour: 17, minute: 58, second: 55 }, workdayEnd);
+
+
+
+// async function newYearGratters() {
+//     const users = await firestore.getAllUsers();
+
+//     console.log(users);
+
+//     users.forEach((user) => {
+//         bot.sendMessage(user.id, `🐸 🍾🥂🕛🎄\n\n*Мои дорогие друзья!*\nИскренне поздравляю вас с наступающими праздниками. Никогда не меняйтесь, оставайтесь всегда такими же! Это пожелание - от всей души, не как эти дурацкие и безликие поздравления, которые народ пересылает друг другу, даже не читая. Вы - самая лучшая команда по водному поло, с которой мне приходилось играть! С новым 2013 годом!`, { parse_mode: "Markdown" });
+//     });
+
+//     logger.log("⌛ [scheduler] >> ❗️❗️❗️❗️❗️❗️ Отправлены новогодние поздравления ❗️❗️❗️❗️❗️❗️");
+// }
+
+// const newYear = new Date(2020, 11, 31, 21, 58, 55);
+// schedule.scheduleJob(newYear, newYearGratters);
+
+//#endregion
+//
