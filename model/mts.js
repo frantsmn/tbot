@@ -11,21 +11,25 @@ module.exports = class Mts {
         try {
             const page = await browser.newPage();
             await page.goto('https://ihelper.mts.by/SelfCarePda/Security.mvc/LogOn', { waitUntil: 'domcontentloaded' });
+            await page.waitFor(2000);
             await page.evaluate(account => {
                 document.getElementsByName("username")[0].value = account.login;
                 document.getElementsByName("password")[0].value = account.password;
             }, account);
+            await page.waitFor(2000);
             // page.screenshot({ path: 'example1.2.png' }),
-            await Promise.all([
-                page.waitForNavigation(),
-                page.evaluate(() => {
-                    document.querySelector("form").submit();
-                })
-            ]);
+            await page.evaluate(() => {
+                document.querySelector("form").submit();
+            });
+            await page.waitFor(4000);
             // await page.screenshot({ path: 'example1.3.png' })
             await page.goto('https://ihelper.mts.by/SelfCarePda/Account.mvc/Status', { waitUntil: 'domcontentloaded' });
             // await page.screenshot({ path: 'example2.png' });
+            await page.waitFor(5000);
             const text = await page.evaluate(() => document.querySelector(".main").innerText);
+            await page.waitFor(10000);
+            await page.close();
+            await page.waitFor(2000);
             return text;
         } catch (error) {
             logger.error(`ERROR (mts.js)\n\n${error}`);
@@ -45,6 +49,7 @@ module.exports = class Mts {
         return { balance, traffic, minutes, spent }
     }
     static async updateAccounts(array) {
+        // { headless: false }
         const browser = await puppeteer.launch();
 
         for await (let account of array) {
@@ -55,8 +60,6 @@ module.exports = class Mts {
                     let data = this.__parseData(text);
                     data.timestamp = + new Date();
                     account = Object.assign(account, data);
-                    // Sleep for 5 sec
-                    (async () => await new Promise(resolve => setTimeout(resolve, 5000)))();
                 })
                 .catch(e => {
                     logger.error(`[mts] Ошибка при получении баланса: ${account.login}\n${e}`);

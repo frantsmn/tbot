@@ -25,6 +25,8 @@ module.exports = class Beltelecom {
             await page.waitForSelector('#loginCarousel div.auth-form-wrap div.balance');
             // await page.screenshot({ path: `./5-[Beltelecom]-after-waitForSelector.${account.login}.png` });
             const balance = await page.evaluate(() => document.querySelector('#loginCarousel div.auth-form-wrap div.balance span').innerText);
+            await page.goto('about:blank');
+            await page.close();
             return balance;
         } catch (error) {
             logger.error(`ERROR (beltelecom.js)\n\n${error}`);
