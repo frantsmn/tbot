@@ -33,7 +33,10 @@ module.exports = class Beltelecom {
         }
     }
     static async updateAccounts(array) {
-        const browser = await puppeteer.launch();
+        if (process.platform === "linux")
+            const browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser' });
+        else
+            const browser = await puppeteer.launch();
 
         for await (let account of array) {
             //Если в течение интервала [this.minUpdateInterval] не обновлялся
