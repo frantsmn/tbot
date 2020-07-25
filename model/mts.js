@@ -49,11 +49,12 @@ module.exports = class Mts {
         return { balance, traffic, minutes, spent }
     }
     static async updateAccounts(array) {
+        let browser;
         // { headless: false }
         if (process.platform === "linux")
-            const browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser' });
+            browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser' });
         else
-            const browser = await puppeteer.launch();
+            browser = await puppeteer.launch();
 
         for await (let account of array) {
             logger.log(`[mts] >> scrapeBalance() для [${account.login}]`);
