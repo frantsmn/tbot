@@ -21,15 +21,12 @@ module.exports = class Mts {
             await page.evaluate(() => {
                 document.querySelector("form").submit();
             });
-            await page.waitFor(4000);
+            await page.waitFor(2000);
             // await page.screenshot({ path: 'example1.3.png' })
             await page.goto('https://ihelper.mts.by/SelfCarePda/Account.mvc/Status', { waitUntil: 'domcontentloaded' });
             // await page.screenshot({ path: 'example2.png' });
-            await page.waitFor(5000);
             const text = await page.evaluate(() => document.querySelector(".main").innerText);
-            await page.waitFor(10000);
             await page.close();
-            await page.waitFor(2000);
             return text;
         } catch (error) {
             logger.error(`ERROR (mts.js)\n\n${error}`);
@@ -57,19 +54,26 @@ module.exports = class Mts {
             browser = await puppeteer.launch();
 
         for await (let account of array) {
-            logger.log(`[mts] >> scrapeBalance() для [${account.login}]`);
+            //Если в течение интервала [this.minUpdateInterval] не обновлялся
+            if (!account.timestamp || +new Date() - account.timestamp > this.minUpdateInterval) {
 
-            await this.__scrapeBalance(browser, account)
-                .then(text => {
-                    let data = this.__parseData(text);
-                    data.timestamp = + new Date();
-                    account = Object.assign(account, data);
-                })
-                .catch(e => {
-                    logger.error(`[mts] Ошибка при получении баланса: ${account.login}\n${e}`);
-                    logger.log(`[mts] Данные не обновлены!`);
-                })
-                .finally(() => logger.log(`[mts] ▶️  Баланс: ${account.balance}`));
+                logger.log(`[mts] >> scrapeBalance() для [${account.login}]`);
+
+                await this.__scrapeBalance(browser, account)
+                    .then(text => {
+                        let data = this.__parseData(text);
+                        data.timestamp = + new Date();
+                        account = Object.assign(account, data);
+                    })
+                    .catch(e => {
+                        logger.error(`[mts] Ошибка при получении баланса: ${account.login}\n${e}`);
+                        logger.log(`[mts] Данные не обновлены!`);
+                    })
+                    .finally(() => logger.log(`[mts] ▶️  Баланс: ${account.balance}`));
+
+            } else {
+                logger.log(`❗❗ [mts] >> Аккаунт [${account.login}] уже обновлялся ${this.minUpdateInterval / 60000} минут назад`);
+            }
         }
 
         await browser.close();
@@ -100,7 +104,7 @@ module.exports = class Mts {
                         {
                             text: "Узнать баланс на данный момент",
                             callback_data: JSON.stringify({
-                                query_id: "beltelecom"
+                                query_id: "mts"
                             })
                         }
                     ]
@@ -123,7 +127,7 @@ module.exports = class Mts {
 
         // Если аккаунты найдены
         if (userAccounts.length) {
-            userAccounts.forEach(account => messages.push(this.__makeMessage(id, account/*, true*/)));
+            userAccounts.forEach(account => messages.push(this.__makeMessage(id, account, true)));
         }
         // Если аккаунты не найдены
         else {
@@ -133,6 +137,14 @@ module.exports = class Mts {
                 options: { parse_mode: "Markdown" }
             });
         }
+        return messages;
+    }
+    static async getMessagesMtsByUserId(id) {
+        let messages = [];
+        const userAccounts = await firestore.getMtsAccountsByUserId(id);
+        await this.updateAccounts(userAccounts);
+        firestore.setAllMtsAccounts(userAccounts);
+        userAccounts.forEach(account => messages.push(this.__makeMessage(id, account, false)));
         return messages;
     }
 }

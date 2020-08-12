@@ -135,6 +135,14 @@ bot.onText(/mts/gi, async msg => {
   messages.forEach(m => bot.sendMessage(m.id, m.text, m.options));
 });
 
+bot.on("callback_query", async response => {
+  if (JSON.parse(response.data).query_id === "mts") {
+    bot.answerCallbackQuery(response.id, { text: `Обновляю данные...\nЭто может занять несколько секунд`, cache_time: 120, show_alert: true });
+    const messages = await Mts.getMessagesMtsByUserId(response.message.chat.id);
+    messages.forEach(m => bot.sendMessage(m.id, m.text, m.options));
+  }
+});
+
 
 //
 // Currency
