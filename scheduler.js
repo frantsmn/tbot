@@ -9,12 +9,12 @@ const Beltelecom = require('./model/beltelecom');
 //#region BALANCE REMINDERS
 
 async function balanceReminders() {
-    logger.log(`⌛ [scheduler] >> balanceReminders()`);
+    logger.info(`⌛ [scheduler] balanceReminders() started`);
     Mts.getAllWarningMessagesFirestore()
         .then(messages => messages.forEach(m => bot.sendMessage(m.id, m.text, m.options)));
     Beltelecom.getAllWarningMessagesFirestore()
         .then(messages => messages.forEach(m => bot.sendMessage(m.id, m.text, m.options)));
-    logger.log(`⌛ [scheduler] balanceReminders() >>`);
+    logger.info(`⌛ [scheduler] balanceReminders() finished`);
 }
 
 schedule.scheduleJob({ hour: 13, minute: 05 }, balanceReminders);
@@ -27,14 +27,30 @@ schedule.scheduleJob({ hour: 13, minute: 05 }, balanceReminders);
 //#region UPDATE ACCOUNTS
 
 async function updateAccounts() {
-    logger.log(`⌛ [scheduler] >> updateAccounts()`);
+    logger.info(`⌛ [scheduler] updateAccounts() started`);
     await Mts.updateAllAccounts();
     await Beltelecom.updateAllAccounts();
-    logger.log(`⌛ [scheduler] updateAccounts() >>`);
+    logger.info(`⌛ [scheduler] updateAccounts() finished`);
 }
 
 schedule.scheduleJob({ hour: 05, minute: 30 }, updateAccounts);
 schedule.scheduleJob({ hour: 17, minute: 30 }, updateAccounts);
+
+//#endregion
+//
+
+
+//
+//#region UPDATE URGENT ACCOUNTS
+
+async function updateUrgentAccounts() {
+    logger.info(`⌛ [scheduler] updateUrgentAccounts() started`);
+    await Mts.updateUrgentAccounts();
+    // await Beltelecom.updateUrgentAccounts();
+    logger.info(`⌛ [scheduler] updateUrgentAccounts() finished`);
+}
+
+schedule.scheduleJob('*/10 * * * *', updateUrgentAccounts);
 
 //#endregion
 //

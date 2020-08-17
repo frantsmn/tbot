@@ -64,10 +64,12 @@ module.exports = class Mts {
                         let data = this.__parseData(text);
                         data.timestamp = + new Date();
                         account = Object.assign(account, data);
+                        account.needUpdate = false;
                     })
                     .catch(e => {
                         logger.error(`[mts] Ошибка при получении баланса: ${account.login}\n${e}`);
                         logger.log(`[mts] Данные не обновлены!`);
+                        account.needUpdate = true;
                     })
                     .finally(() => logger.log(`[mts] ▶️  Баланс: ${account.balance}`));
 
@@ -82,7 +84,12 @@ module.exports = class Mts {
     static async updateAllAccounts() {
         const allMtsAccounts = await firestore.getAllMtsAccounts();
         await this.updateAccounts(allMtsAccounts);
-        firestore.setAllMtsAccounts(allMtsAccounts);
+        firestore.setMtsAccounts(allMtsAccounts);
+    }
+    static async updateUrgentAccounts() {
+        const urgentMtsAccounts = await firestore.getUrgentMtsAccounts();
+        await this.updateAccounts(urgentMtsAccounts);
+        firestore.setMtsAccounts(urgentMtsAccounts);
     }
 
     //Messages
@@ -143,7 +150,7 @@ module.exports = class Mts {
         let messages = [];
         const userAccounts = await firestore.getMtsAccountsByUserId(id);
         await this.updateAccounts(userAccounts);
-        firestore.setAllMtsAccounts(userAccounts);
+        firestore.setMtsAccounts(userAccounts);
         userAccounts.forEach(account => messages.push(this.__makeMessage(id, account, false)));
         return messages;
     }

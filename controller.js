@@ -85,7 +85,7 @@ const setUser = require("./firestore").setUser;
 const getUserByUserId = require("./firestore").getUserByUserId;
 
 bot.on("message", async msg => {
-  if (msg.from.id !== ADMIN_ID) {
+  // if (msg.from.id !== ADMIN_ID) {
 
     //1. Проверка на нового пользователя
     let user = await getUserByUserId(msg.from.id);
@@ -93,16 +93,16 @@ bot.on("message", async msg => {
       // logger.log(`Информация из базы: ${JSON.stringify(user)}`);
     } else {
       setUser(msg.from);
-      logger.log(`❗❗ В базу добавлен пользователь\n\n${JSON.stringify(msg.from.first_name)}`);
+      logger.info(`❗❗ В базу добавлен пользователь\n\n${JSON.stringify(msg.from.first_name)}`);
       bot.sendMessage(ADMIN_ID, `❗❗ В базу добавлен пользователь\n\n${JSON.stringify(msg.from.first_name)}`);
     }
 
     //2. Логгирование сообщений
-    logger.log(`❗ Пользователь ${msg.from.first_name} ${msg.chat.id} оставил сообщение: ${JSON.stringify(msg)}\n`);
+    logger.info(`❗ Пользователь ${msg.from.first_name} ${msg.chat.id} оставил сообщение: ${JSON.stringify(msg)}\n`);
     bot.sendMessage(ADMIN_ID, `➡️`)
       .then(() => bot.forwardMessage(ADMIN_ID, msg.from.id, msg.message_id));
 
-  }
+  // }
 });
 
 

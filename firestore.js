@@ -60,7 +60,19 @@ exports.getAllMtsAccounts = async () => {
     return accounts;
 }
 
-exports.setAllMtsAccounts = async (data) => {
+exports.getUrgentMtsAccounts = async () => {
+    let accounts = [];
+    const collection = await firestore.collection('mts').get();
+
+    collection.forEach(doc => {
+        if (doc.data().needUpdate)
+            accounts.push(doc.data())
+    });
+
+    return accounts;
+}
+
+exports.setMtsAccounts = async (data) => {
     for (const account of data) {
         await firestore.doc(`mts/${account.login}`).set(account);
     }
