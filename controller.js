@@ -85,7 +85,7 @@ const setUser = require("./firestore").setUser;
 const getUserByUserId = require("./firestore").getUserByUserId;
 
 bot.on("message", async msg => {
-  // if (msg.from.id !== ADMIN_ID) {
+  if (msg.from.id !== ADMIN_ID) {
 
     //1. Проверка на нового пользователя
     let user = await getUserByUserId(msg.from.id);
@@ -98,11 +98,9 @@ bot.on("message", async msg => {
     }
 
     //2. Логгирование сообщений
-    logger.info(`❗ Пользователь ${msg.from.first_name} ${msg.chat.id} оставил сообщение: ${JSON.stringify(msg)}\n`);
-    bot.sendMessage(ADMIN_ID, `➡️`)
-      .then(() => bot.forwardMessage(ADMIN_ID, msg.from.id, msg.message_id));
-
-  // }
+    logger.info(`❗ Пользователь ${msg.from.first_name} ${msg.chat.id} оставил сообщение: ${JSON.stringify(msg)}`);
+    bot.forwardMessage(ADMIN_ID, msg.from.id, msg.message_id);
+  }
 });
 
 
@@ -113,14 +111,22 @@ const Beltelecom = require('./model/beltelecom');
 
 bot.onText(/beltelecom/gi, async msg => {
   const messages = await Beltelecom.getMessagesFirestoreByUserId(msg.from.id);
-  messages.forEach(m => bot.sendMessage(m.id, m.text, m.options));
+  messages.forEach(m => {
+    bot.sendMessage(m.id, m.text, m.options);
+    if (msg.from.id !== ADMIN_ID)
+      bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${m.text}`, m.options);
+  });
 });
 
 bot.on("callback_query", async response => {
   if (JSON.parse(response.data).query_id === "beltelecom") {
     bot.answerCallbackQuery(response.id, { text: `Обновляю данные...\nЭто может занять несколько секунд`, cache_time: 120, show_alert: true });
     const messages = await Beltelecom.getMessagesBeltelecomByUserId(response.message.chat.id);
-    messages.forEach(m => bot.sendMessage(m.id, m.text, m.options));
+    messages.forEach(m => {
+      bot.sendMessage(m.id, m.text, m.options);
+      if (msg.from.id !== ADMIN_ID)
+        bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${m.text}`, m.options);
+    });
   }
 });
 
@@ -132,14 +138,22 @@ const Mts = require('./model/mts');
 
 bot.onText(/mts/gi, async msg => {
   const messages = await Mts.getMessagesFirestoreByUserId(msg.from.id);
-  messages.forEach(m => bot.sendMessage(m.id, m.text, m.options));
+  messages.forEach(m => {
+    bot.sendMessage(m.id, m.text, m.options);
+    if (msg.from.id !== ADMIN_ID)
+      bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${m.text}`, m.options);
+  });
 });
 
 bot.on("callback_query", async response => {
   if (JSON.parse(response.data).query_id === "mts") {
     bot.answerCallbackQuery(response.id, { text: `Обновляю данные...\nЭто может занять несколько секунд`, cache_time: 120, show_alert: true });
     const messages = await Mts.getMessagesMtsByUserId(response.message.chat.id);
-    messages.forEach(m => bot.sendMessage(m.id, m.text, m.options));
+    messages.forEach(m => {
+      bot.sendMessage(m.id, m.text, m.options);
+      if (msg.from.id !== ADMIN_ID)
+        bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${m.text}`, m.options);
+    });
   }
 });
 
@@ -153,7 +167,8 @@ bot.onText(/Курсы валют/gim, async msg => {
   const text = await Currency.getCurrency();
   bot.sendMessage(msg.chat.id, text);
   logger.log(`Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
-  if (msg.from.id !== ADMIN_ID) bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
+  if (msg.from.id !== ADMIN_ID)
+    bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
 });
 
 bot.onText(/\D*(\d*[.,]?\d+)\s*(\$|€|₽|usd|eur|rub|byn)/gim, async (msg, match) => {
@@ -161,7 +176,8 @@ bot.onText(/\D*(\d*[.,]?\d+)\s*(\$|€|₽|usd|eur|rub|byn)/gim, async (msg, mat
   const currencyAbb = match[2];
   const text = await Currency.getExchange(currencyAbb, value);
   bot.sendMessage(msg.chat.id, text, { parse_mode: "Markdown" });
-  if (msg.from.id !== ADMIN_ID) bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
+  if (msg.from.id !== ADMIN_ID)
+    bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
 });
 
 bot.onText(/^(\d*[.,]?\d+)$/gim, (msg, match) => {
