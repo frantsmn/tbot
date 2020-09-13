@@ -27,10 +27,10 @@ schedule.scheduleJob({ hour: 13, minute: 05 }, balanceReminders);
 //#region UPDATE ACCOUNTS
 
 async function updateAccounts() {
-    // logger.info(`⌛ [scheduler] updateAccounts() started`);
+    logger.info(`⌛ [scheduler] updateAccounts() started`);
     await Mts.updateAllAccounts();
     await Beltelecom.updateAllAccounts();
-    // logger.info(`⌛ [scheduler] updateAccounts() finished`);
+    logger.info(`⌛ [scheduler] updateAccounts() finished`);
 }
 
 schedule.scheduleJob({ hour: 05, minute: 30 }, updateAccounts);
@@ -44,10 +44,10 @@ schedule.scheduleJob({ hour: 17, minute: 30 }, updateAccounts);
 //#region UPDATE URGENT ACCOUNTS
 
 async function updateUrgentAccounts() {
-    logger.info(`⌛ [scheduler] updateUrgentAccounts() started`);
+    // logger.info(`⌛ [scheduler] updateUrgentAccounts() started`);
     await Mts.updateUrgentAccounts();
     // await Beltelecom.updateUrgentAccounts();
-    logger.info(`⌛ [scheduler] updateUrgentAccounts() finished`);
+    // logger.info(`⌛ [scheduler] updateUrgentAccounts() finished`);
 }
 
 schedule.scheduleJob('*/10 * * * *', updateUrgentAccounts);
