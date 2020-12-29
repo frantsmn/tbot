@@ -12,8 +12,8 @@ async function balanceReminders() {
     logger.info(`⌛ [scheduler] balanceReminders() started`);
     Mts.getAllWarningMessagesFirestore()
         .then(messages => messages.forEach(m => bot.sendMessage(m.id, m.text, m.options)));
-    Beltelecom.getAllWarningMessagesFirestore()
-        .then(messages => messages.forEach(m => bot.sendMessage(m.id, m.text, m.options)));
+    // Beltelecom.getAllWarningMessagesFirestore()
+    //     .then(messages => messages.forEach(m => bot.sendMessage(m.id, m.text, m.options)));
     logger.info(`⌛ [scheduler] balanceReminders() finished`);
 }
 
@@ -29,7 +29,7 @@ schedule.scheduleJob({ hour: 13, minute: 05 }, balanceReminders);
 async function updateAccounts() {
     logger.info(`⌛ [scheduler] updateAccounts() started`);
     await Mts.updateAllAccounts();
-    await Beltelecom.updateAllAccounts();
+    // await Beltelecom.updateAllAccounts();
     logger.info(`⌛ [scheduler] updateAccounts() finished`);
 }
 
@@ -86,21 +86,21 @@ schedule.scheduleJob('*/10 * * * *', updateUrgentAccounts);
 // schedule.scheduleJob({ dayOfWeek: [new schedule.Range(1, 5)], hour: 17, minute: 58, second: 55 }, workdayEnd);
 
 
+const getAllUsers = require('./firestore').getAllUsers;
+async function newYearGratters() {
+    const users = await getAllUsers();
 
-// async function newYearGratters() {
-//     const users = await firestore.getAllUsers();
+    console.log(users);
 
-//     console.log(users);
+    users.forEach((user) => {
+        bot.sendMessage(user.id, `🐸 🍾🥂🕛🎄\n\n*Мои дорогие друзья!*\nИскренне поздравляю вас с наступающими праздниками. Никогда не меняйтесь, оставайтесь всегда такими же! Это пожелание - от всей души, не как эти дурацкие и безликие поздравления, которые народ пересылает друг другу, даже не читая. Вы - самая лучшая команда по водному поло, с которой мне приходилось играть! С новым 2013 годом!`, { parse_mode: "Markdown" });
+    });
 
-//     users.forEach((user) => {
-//         bot.sendMessage(user.id, `🐸 🍾🥂🕛🎄\n\n*Мои дорогие друзья!*\nИскренне поздравляю вас с наступающими праздниками. Никогда не меняйтесь, оставайтесь всегда такими же! Это пожелание - от всей души, не как эти дурацкие и безликие поздравления, которые народ пересылает друг другу, даже не читая. Вы - самая лучшая команда по водному поло, с которой мне приходилось играть! С новым 2013 годом!`, { parse_mode: "Markdown" });
-//     });
+    logger.log("⌛ [scheduler] >> ❗️❗️❗️❗️❗️❗️ Отправлены новогодние поздравления ❗️❗️❗️❗️❗️❗️");
+}
 
-//     logger.log("⌛ [scheduler] >> ❗️❗️❗️❗️❗️❗️ Отправлены новогодние поздравления ❗️❗️❗️❗️❗️❗️");
-// }
-
-// const newYear = new Date(2020, 11, 31, 21, 58, 55);
-// schedule.scheduleJob(newYear, newYearGratters);
+const newYear = new Date(2020, 11, 31, 22, 58, 55);
+schedule.scheduleJob(newYear, newYearGratters);
 
 //#endregion
 //

@@ -11,12 +11,7 @@ bot.onText(/\/start/, msg => {
       bot.sendMessage(msg.chat.id, `🐸 Ква, Создатель!`, {
         reply_markup: JSON.stringify({
           keyboard: [
-            ["Курсы валют", "Баланс MTS", "Баланс Beltelecom"]
-            // ,
-            // [
-            //     "Admin option",
-            //     "Admin option"
-            // ]
+            ["Курсы валют", "Баланс MTS"/*, "Баланс Beltelecom"*/]
           ],
           resize_keyboard: true,
           one_time_keyboard: false,
@@ -46,7 +41,7 @@ bot.onText(/\/start/, msg => {
         {
           parse_mode: "Markdown",
           reply_markup: JSON.stringify({
-            keyboard: [["Курсы валют", "Баланс MTS", "Баланс Beltelecom"]],
+            keyboard: [["Курсы валют", "Баланс MTS"/*, "Баланс Beltelecom"*/]],
             resize_keyboard: true,
             one_time_keyboard: false,
             selective: false
