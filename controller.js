@@ -102,28 +102,28 @@ bot.on("message", async msg => {
 //
 // Beltelecom
 //
-const Beltelecom = require('./model/beltelecom');
+// const Beltelecom = require('./model/beltelecom');
 
-bot.onText(/beltelecom/gi, async msg => {
-  const messages = await Beltelecom.getMessagesFirestoreByUserId(msg.from.id);
-  messages.forEach(m => {
-    bot.sendMessage(m.id, m.text, m.options);
-    if (msg.from.id !== ADMIN_ID)
-      bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${m.text}`, m.options);
-  });
-});
+// bot.onText(/beltelecom/gi, async msg => {
+//   const messages = await Beltelecom.getMessagesFirestoreByUserId(msg.from.id);
+//   messages.forEach(m => {
+//     bot.sendMessage(m.id, m.text, m.options);
+//     if (msg.from.id !== ADMIN_ID)
+//       bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${m.text}`, m.options);
+//   });
+// });
 
-bot.on("callback_query", async response => {
-  if (JSON.parse(response.data).query_id === "beltelecom") {
-    bot.answerCallbackQuery(response.id, { text: `Обновляю данные...\nЭто может занять несколько секунд`, cache_time: 120, show_alert: true });
-    const messages = await Beltelecom.getMessagesBeltelecomByUserId(response.message.chat.id);
-    messages.forEach(m => {
-      bot.sendMessage(m.id, m.text, m.options);
-      if (msg.from.id !== ADMIN_ID)
-        bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${m.text}`, m.options);
-    });
-  }
-});
+// bot.on("callback_query", async response => {
+//   if (JSON.parse(response.data).query_id === "beltelecom") {
+//     bot.answerCallbackQuery(response.id, { text: `Обновляю данные...\nЭто может занять несколько секунд`, cache_time: 120, show_alert: true });
+//     const messages = await Beltelecom.getMessagesBeltelecomByUserId(response.message.chat.id);
+//     messages.forEach(m => {
+//       bot.sendMessage(m.id, m.text, m.options);
+//       if (msg.from.id !== ADMIN_ID)
+//         bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${m.text}`, m.options);
+//     });
+//   }
+// });
 
 
 //
@@ -162,7 +162,9 @@ const Currency = require("./model/currency");
 
 bot.onText(/Курсы валют/gim, async msg => {
   const text = await Currency.getCurrency();
-  bot.sendMessage(msg.chat.id, text);
+  bot.sendMessage(msg.chat.id, text, { parse_mode: "Markdown" });
+
+  //TODO Перенсти в логгер
   logger.log(`Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
   if (msg.from.id !== ADMIN_ID)
     bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
@@ -170,64 +172,72 @@ bot.onText(/Курсы валют/gim, async msg => {
 
 bot.onText(/\D*(\d*[.,]?\d+)\s*(\$|€|₽|usd|eur|rub|byn)/gim, async (msg, match) => {
   const value = parseFloat(match[1].replace(/,/, "."));
-  const currencyAbb = match[2];
-  const text = await Currency.getExchange(currencyAbb, value);
+  const abbreviation = match[2];
+  const text = await Currency.getExchange(value, abbreviation);
   bot.sendMessage(msg.chat.id, text, { parse_mode: "Markdown" });
+
+  //TODO Перенсти в логгер
   if (msg.from.id !== ADMIN_ID)
     bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
 });
 
-bot.onText(/^(\d*[.,]?\d+)$/gim, (msg, match) => {
+bot.onText(/^(\d*[.,]?\d+)$/gim, async (msg, match) => {
   const value = parseFloat(match[1].replace(/,/, "."));
-  const options = {
-    reply_to_message_id: msg.message_id,
-    reply_markup: JSON.stringify({
-      inline_keyboard: [
-        [
-          {
-            text: "USD",
-            callback_data: JSON.stringify({
-              query_id: "currency",
-              value: value,
-              currency: "USD"
-            })
-          },
-          {
-            text: "EUR",
-            callback_data: JSON.stringify({
-              query_id: "currency",
-              value: value,
-              currency: "EUR"
-            })
-          },
-          {
-            text: "RUB",
-            callback_data: JSON.stringify({
-              query_id: "currency",
-              value: value,
-              currency: "RUB"
-            })
-          },
-          {
-            text: "BYN",
-            callback_data: JSON.stringify({
-              query_id: "currency",
-              value: value,
-              currency: "BYN"
-            })
-          }
-        ]
-      ]
-    })
-  };
-  bot.sendMessage(msg.chat.id, "Выберите валюту", options);
+  const message = await Currency.getExchange(value);
+  bot.sendMessage(msg.chat.id, message, { parse_mode: "Markdown" });
 });
 
-bot.on("callback_query", async response => {
-  const data = JSON.parse(response.data);
-  if (data.query_id === "currency") {
-    bot.answerCallbackQuery(response.id);
-    const text = await Currency.getExchange(data.currency, data.value);
-    bot.sendMessage(response.message.chat.id, text, { parse_mode: "Markdown" });
-  }
-});
+// bot.onText(/^(\d*[.,]?\d+)$/gim, (msg, match) => {
+//   const value = parseFloat(match[1].replace(/,/, "."));
+//   const options = {
+//     reply_to_message_id: msg.message_id,
+//     reply_markup: JSON.stringify({
+//       inline_keyboard: [
+//         [
+//           {
+//             text: "USD",
+//             callback_data: JSON.stringify({
+//               query_id: "currency",
+//               value: value,
+//               currency: "USD"
+//             })
+//           },
+//           {
+//             text: "EUR",
+//             callback_data: JSON.stringify({
+//               query_id: "currency",
+//               value: value,
+//               currency: "EUR"
+//             })
+//           },
+//           {
+//             text: "RUB",
+//             callback_data: JSON.stringify({
+//               query_id: "currency",
+//               value: value,
+//               currency: "RUB"
+//             })
+//           },
+//           {
+//             text: "BYN",
+//             callback_data: JSON.stringify({
+//               query_id: "currency",
+//               value: value,
+//               currency: "BYN"
+//             })
+//           }
+//         ]
+//       ]
+//     })
+//   };
+//   bot.sendMessage(msg.chat.id, "Выберите валюту", options);
+// });
+
+// bot.on("callback_query", async response => {
+//   const data = JSON.parse(response.data);
+//   if (data.query_id === "currency") {
+//     bot.answerCallbackQuery(response.id);
+//     const text = await Currency.getExchange(data.currency, data.value);
+//     bot.sendMessage(response.message.chat.id, text, { parse_mode: "Markdown" });
+//   }
+// });
