@@ -1,22 +1,46 @@
 const bot = require("./app").bot;
 const logger = require("./logger");
 
+function AdminKeyboard() {
 
-//
-// Стартовое сообщение пользователю
-//
+  this.keyboard = {
+    keyboard: [
+      ["Курсы валют"],
+      ["⚫ Клипса", "⚫ Подсветка"]
+    ],
+    resize_keyboard: true,
+    one_time_keyboard: false,
+    selective: false
+  };
+
+  this.setClipLightStatus = (status) => {
+    this.keyboard.keyboard[1][0] = status ? "🟡 Клипса" : "⚫ Клипса";
+  }
+
+  this.setAmbientLightStatus = (status) => {
+    this.keyboard.keyboard[1][1] = status ? "🟡 Подсветка" : "⚫ Подсветка";
+  }
+
+}
+
+const ADMIN_KEYBOARD = new AdminKeyboard();
+
+const USER_KEYBOARD = {
+  keyboard: [["Курсы валют", "Баланс MTS"]],
+  resize_keyboard: true,
+  one_time_keyboard: false,
+  selective: false
+}
+
+/**
+ * Приветствие
+ */
 bot.onText(/\/start/, msg => {
   switch (msg.chat.id) {
     case ADMIN_ID:
       bot.sendMessage(msg.chat.id, `🐸 Ква, Создатель!`, {
-        reply_markup: JSON.stringify({
-          keyboard: [
-            ["Курсы валют", "Баланс MTS"/*, "Баланс Beltelecom"*/]
-          ],
-          resize_keyboard: true,
-          one_time_keyboard: false,
-          selective: false
-        })
+        parse_mode: "Markdown",
+        reply_markup: JSON.stringify(ADMIN_KEYBOARD.keyboard)
       });
       break;
 
@@ -40,12 +64,7 @@ bot.onText(/\/start/, msg => {
 - Ежедневная проверка и уведомление о пополнении, если необходимо`,
         {
           parse_mode: "Markdown",
-          reply_markup: JSON.stringify({
-            keyboard: [["Курсы валют", "Баланс MTS"/*, "Баланс Beltelecom"*/]],
-            resize_keyboard: true,
-            one_time_keyboard: false,
-            selective: false
-          })
+          reply_markup: JSON.stringify(USER_KEYBOARD)
         }
       );
       break;
@@ -53,9 +72,9 @@ bot.onText(/\/start/, msg => {
 });
 
 
-//
-// Общие ответы пользователю
-//
+/**
+ * Общие ответы
+ */
 bot.onText(/пасиб|спс|благодар|cgc|cgfcb/gi, async msg =>
   bot.sendMessage(msg.chat.id, Math.random() > 0.5 ? "🐸❤️ Пожалуйста!" : "🐸❤️ Рада стараться!"));
 
@@ -63,9 +82,9 @@ bot.onText(/прив|ghbd|hello|hi/gi, async msg =>
   bot.sendMessage(msg.chat.id, Math.random() > 0.5 ? `🐸✋ Привет, ${msg.chat.first_name}!` : "🐸 Ааа... Кто здесь?!"));
 
 
-//
-// Отправка текстового сообщения пользователю через бота: @id Text...
-//
+/**
+ * Отправка сообщения через бота: @id Text...
+ */
 bot.onText(/@([0-9]*)(.*)/, function (msg, match) {
   let id = match[1];
   let text = match[2];
@@ -73,9 +92,9 @@ bot.onText(/@([0-9]*)(.*)/, function (msg, match) {
 });
 
 
-//
-// Действия по сообщению
-//
+/**
+ * Трекинг пользователей
+ */
 const setUser = require("./firestore").setUser;
 const getUserByUserId = require("./firestore").getUserByUserId;
 
@@ -99,9 +118,9 @@ bot.on("message", async msg => {
 });
 
 
-//
-// Beltelecom
-//
+/**
+ * Beltelecom
+ */
 // const Beltelecom = require('./model/beltelecom');
 
 // bot.onText(/beltelecom/gi, async msg => {
@@ -126,9 +145,9 @@ bot.on("message", async msg => {
 // });
 
 
-//
-// Mts
-//
+/**
+ * MTS
+ */
 const Mts = require('./model/mts');
 
 bot.onText(/mts/gi, async msg => {
@@ -154,14 +173,14 @@ bot.on("callback_query", async response => {
   }
 });
 
-
-//
-// Currency
-//
+/**
+ * Currency
+ */
 const Currency = require("./model/currency");
 
 bot.onText(/Курсы валют/gim, async msg => {
   const text = await Currency.getCurrency();
+  bot.deleteMessage(msg.chat.id, msg.message_id);
   bot.sendMessage(msg.chat.id, text, { parse_mode: "Markdown" });
 
   //TODO Перенсти в логгер
@@ -185,7 +204,45 @@ bot.onText(/^(\d*[.,]?\d+)$/gim, async (msg, match) => {
   const value = parseFloat(match[1].replace(/,/, "."));
   const message = await Currency.getExchange(value);
   bot.sendMessage(msg.chat.id, message, { parse_mode: "Markdown" });
+
+  //TODO добавить логгер
 });
+
+/**
+ * Tuya
+ */
+
+const ambientLight = require("./model/tuya").ambientLight;
+bot.onText(/подсветка/gi, async msg => {
+  if (msg.chat.id !== ADMIN_ID) return;
+  ambientLight.toggle();
+  bot.deleteMessage(msg.chat.id, msg.message_id);
+})
+ambientLight.on('statusChange', status => {
+  ADMIN_KEYBOARD.setAmbientLightStatus(status);
+  bot.sendMessage(ADMIN_ID, `Подсветка ${status ? 'включена' : 'выключена'}`, {
+    reply_markup: JSON.stringify(ADMIN_KEYBOARD.keyboard),
+    disable_notification: true
+  });
+});
+
+const clipLight = require("./model/tuya").clipLight;
+bot.onText(/клипса/gi, async msg => {
+  if (msg.chat.id !== ADMIN_ID) return;
+  clipLight.toggle();
+  bot.deleteMessage(msg.chat.id, msg.message_id);
+})
+clipLight.on('statusChange', status => {
+  ADMIN_KEYBOARD.setClipLightStatus(status);
+  bot.sendMessage(ADMIN_ID, `Клипса ${status ? 'включена' : 'выключена'}`, {
+    reply_markup: JSON.stringify(ADMIN_KEYBOARD.keyboard),
+    disable_notification: true
+  });
+});
+
+// bot.onText(/off/gi, msg => {
+//   tyua.off();
+// });
 
 // bot.onText(/^(\d*[.,]?\d+)$/gim, (msg, match) => {
 //   const value = parseFloat(match[1].replace(/,/, "."));

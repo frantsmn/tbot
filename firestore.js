@@ -1,7 +1,6 @@
 const admin = require("firebase-admin");
-const serviceAccount = require("./firebase-adminsdk.json");
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert(FIREBASE_ACCOUNT),
     databaseURL: "https://frog-back.firebaseio.com"
 });
 // As an admin, the app has access to read and write all data, regardless of Security Rules

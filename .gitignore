@@ -12,5 +12,6 @@ node_modules/
 .env
 .env.test
 
-# keys
+# keys & secrets
 firebase-adminsdk.json
+tuya-devices.json

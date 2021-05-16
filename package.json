@@ -20,6 +20,7 @@
     "node-schedule": "^1.3.3",
     "node-telegram-bot-api": "^0.30.0",
     "nodemon": "^2.0.7",
-    "puppeteer": "^1.20.0"
+    "puppeteer": "^1.20.0",
+    "tuyapi": "github:codetheweb/tuyapi"
   }
 }
