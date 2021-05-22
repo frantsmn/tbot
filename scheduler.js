@@ -57,8 +57,59 @@ schedule.scheduleJob('*/10 * * * *', updateUrgentAccounts);
 //
 
 //#region checkDevice 
+const ambientLight = require("./model/tuya").ambientLight;
+const clipLight = require("./model/tuya").clipLight;
+
 schedule.scheduleJob('*/1 * * * *', scan.checkDevice);
-scan.checkDevice();
+scan.checkDevice().then(result => {
+    const now = new Date().getHours()
+
+    /* 
+    =================> Если телефон дома 
+    */
+    if (result) {
+
+        /* От 20:00 до 22:00 и если свет выключен */
+        if (now >= 19 && now <= 22 && ambientLight.status === false) {
+            // включить свет
+
+            console.log('[scheduler.js] Ambient lights turn on! (20:00 - 22:00) [phone at home + lights was off])');
+            ambientLight.toggle();
+
+        }
+
+    }
+
+    /* 
+    =================> Если телефон не дома 
+    */
+    else {
+        // TODO
+        // Надо написать проверку на длительность молчания устройства
+    }
+
+    /* 
+    =================> В любом случае 
+    */
+
+    /* От 01:00 до 05:00 если AMBIENT свет включен */
+    if (now >= 1 && now <= 5 && ambientLight.status === true) {
+
+        // выключить свет
+        console.log('[scheduler.js] Ambient lights turn off! (01:00 - 05:00) [light was on])');
+        ambientLight.toggle();
+
+    }
+
+    /* От 01:00 до 05:00 если CLIPLIGHT свет включен */
+    if (now >= 1 && now <= 5 && clipLight.status === true) {
+
+        // выключить свет
+        console.log('[scheduler.js] Ambient lights turn off! (01:00 - 05:00) [light was on]');
+        clipLight.toggle();
+    }
+
+});
 
 //
 //#region REMINDERS

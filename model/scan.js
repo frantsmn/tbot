@@ -17,10 +17,10 @@ exports.checkDevice = function (){
 
             // console.log(data)
             if (data !== null && data.some(device => device.mac === 'A0:28:ED:80:6F:12')) {
-                console.log('[scan.js] Создатель дома');
+                console.log('[scan.js] Device at home!');
                 // resolve(true);
             } else {
-                console.log('[scan.js] Телефон не найден');
+                console.log('[scan.js] Device not found');
                 // resolve(false);
             }
         }
