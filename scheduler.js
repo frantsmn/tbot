@@ -60,33 +60,43 @@ schedule.scheduleJob('*/10 * * * *', updateUrgentAccounts);
 const ambientLight = require("./model/tuya").ambientLight;
 const clipLight = require("./model/tuya").clipLight;
 
-schedule.scheduleJob('*/1 * * * *', scan.checkDevice);
-scan.checkDevice().then(result => {
-    const now = new Date().getHours()
+schedule.scheduleJob('*/1 * * * *', lightScheduler);
 
-    /* 
-    =================> Если телефон дома 
-    */
-    if (result) {
+function lightScheduler() {
 
-        /* От 20:00 до 22:00 и если свет выключен */
-        if (now >= 19 && now <= 22 && ambientLight.status === false) {
-            // включить свет
+    // По отклику телефона
 
-            console.log('[scheduler.js] Ambient lights turn on! (20:00 - 22:00) [phone at home + lights was off])');
-            ambientLight.toggle();
+    scan.checkDevice().then(result => {
+        const now = new Date().getHours()
+
+        /**
+         * Если телефон найден
+         */
+
+        if (result) {
+
+            /* От 20:00 до 22:00 и если свет выключен */
+            if (now >= 19 && now <= 22 && ambientLight.status === false) {
+
+                // включить свет
+                ambientLight.toggle();
+                console.log('[scheduler.js] Ambient lights turn on! (20:00 - 22:00) [phone at home + lights was off])');
+
+            }
 
         }
 
-    }
+        /**
+         * Если телефон не найден 
+         */
 
-    /* 
-    =================> Если телефон не дома 
-    */
-    else {
-        // TODO
-        // Надо написать проверку на длительность молчания устройства
-    }
+        else {
+            // TODO
+            // Надо написать проверку на длительность молчания устройства
+        }
+
+    });
+
 
     /* 
     =================> В любом случае 
@@ -96,8 +106,8 @@ scan.checkDevice().then(result => {
     if (now >= 1 && now <= 5 && ambientLight.status === true) {
 
         // выключить свет
-        console.log('[scheduler.js] Ambient lights turn off! (01:00 - 05:00) [light was on])');
         ambientLight.toggle();
+        console.log('[scheduler.js] Ambient lights turn off! (01:00 - 05:00) [light was on])');
 
     }
 
@@ -105,11 +115,11 @@ scan.checkDevice().then(result => {
     if (now >= 1 && now <= 5 && clipLight.status === true) {
 
         // выключить свет
-        console.log('[scheduler.js] Ambient lights turn off! (01:00 - 05:00) [light was on]');
         clipLight.toggle();
+        console.log('[scheduler.js] Ambient lights turn off! (01:00 - 05:00) [light was on]');
     }
 
-});
+}
 
 //
 //#region REMINDERS
