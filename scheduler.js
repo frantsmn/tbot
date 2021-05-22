@@ -63,11 +63,11 @@ const clipLight = require("./model/tuya").clipLight;
 schedule.scheduleJob('*/1 * * * *', lightScheduler);
 
 function lightScheduler() {
+    const now = new Date().getHours()
 
     // По отклику телефона
 
     scan.checkDevice().then(result => {
-        const now = new Date().getHours()
 
         /**
          * Если телефон найден
