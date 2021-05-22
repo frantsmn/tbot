@@ -57,7 +57,7 @@ schedule.scheduleJob('*/10 * * * *', updateUrgentAccounts);
 //
 
 //#region checkDevice 
-schedule.scheduleJob('*/2 * * * *', checkDevice());
+schedule.scheduleJob('*/1 * * * *', checkDevice);
 
 
 //
