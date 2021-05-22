@@ -3,7 +3,8 @@ const logger = require('./logger');
 const bot = require('./app').bot;
 
 const Mts = require('./model/mts');
-const Beltelecom = require('./model/beltelecom');
+// const Beltelecom = require('./model/beltelecom');
+const checkDevice = require('./model/scan');
 
 //
 //#region BALANCE REMINDERS
@@ -54,6 +55,9 @@ schedule.scheduleJob('*/10 * * * *', updateUrgentAccounts);
 
 //#endregion
 //
+
+//#region checkDevice 
+schedule.scheduleJob('*/2 * * * *', checkDevice());
 
 
 //
