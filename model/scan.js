@@ -1,31 +1,29 @@
 const arpScanner = require('arpscan');
 
-function checkDevice() {
+exports.checkDevice = function (){
     if (process.platform !== "linux") return;
-    return new Promise((resolve, reject) => {
+    // return new Promise((resolve, reject) => {
 
 
         console.log('[scan.js] Checking device...');
 
         arpScanner(onResult, { args: ['-l', '-v'] });
 
-        function onResult(err, data) {
-            if (err) {
+        function onResult(error, data) {
+            if (error && error !== 1) {
                 console.log(error)
-                reject();
+                // reject();
             };
 
             // console.log(data)
-            if (data.length || data.some(device => device.mac === 'A0:28:ED:80:6F:12')) {
+            if (data !== null && data.some(device => device.mac === 'A0:28:ED:80:6F:12')) {
                 console.log('[scan.js] Создатель дома');
-                resolve(true);
+                // resolve(true);
             } else {
                 console.log('[scan.js] Телефон не найден');
-                resolve(false);
+                // resolve(false);
             }
         }
 
-    })
+    // })
 }
-
-exports.checkDevice = checkDevice;

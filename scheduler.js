@@ -4,7 +4,7 @@ const bot = require('./app').bot;
 
 const Mts = require('./model/mts');
 // const Beltelecom = require('./model/beltelecom');
-const checkDevice = require('./model/scan');
+const scan = require('./model/scan');
 
 //
 //#region BALANCE REMINDERS
@@ -57,8 +57,8 @@ schedule.scheduleJob('*/10 * * * *', updateUrgentAccounts);
 //
 
 //#region checkDevice 
-schedule.scheduleJob('*/1 * * * *', checkDevice);
-
+schedule.scheduleJob('*/1 * * * *', scan.checkDevice);
+scan.checkDevice();
 
 //
 //#region REMINDERS
