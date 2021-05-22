@@ -95,7 +95,7 @@ function lightScheduler() {
             // Надо написать проверку на длительность молчания устройства
         }
 
-    });
+    }).catch(error => console.log('[scheduler.js] checkDevice() error: ', error));
 
 
     /* 

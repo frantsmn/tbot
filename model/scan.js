@@ -1,6 +1,6 @@
 const arpScanner = require('arpscan');
 
-exports.checkDevice = function (){
+exports.checkDevice = function () {
     if (process.platform !== "linux") return;
     return new Promise((resolve, reject) => {
 
@@ -10,8 +10,8 @@ exports.checkDevice = function (){
 
         function onResult(error, data) {
             if (error && error !== 1) {
-                console.log(error)
-                reject();
+                console.log(error);
+                reject(error);
             };
 
             // console.log(data)
