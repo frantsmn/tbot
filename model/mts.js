@@ -47,11 +47,18 @@ module.exports = class Mts {
     }
     static async updateAccounts(array) {
         let browser;
-        // { headless: false }
-        if (process.platform === "linux")
-            browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser' });
-        else
-            browser = await puppeteer.launch();
+        
+        try {
+            // { headless: false }
+            if (process.platform === "linux")
+                browser = await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser', args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+            else
+                browser = await puppeteer.launch();
+
+        } catch (error) {
+            console.log('[mts.js] Error:', error);
+            return;
+        }
 
         for await (let account of array) {
             //Если в течение интервала [this.minUpdateInterval] не обновлялся
