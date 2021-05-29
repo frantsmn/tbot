@@ -231,7 +231,7 @@ ambientLight.on('statusChange', status => {
   } else {
     bot.editMessageReplyMarkup(ADMIN_KEYBOARD.keyboard, {
       chat_id: tuyaStatusMessage.from.id,
-      message_id: tuyaStatusMessage.message.message_id
+      message_id: tuyaStatusMessage.message_id
     });
   }
 
@@ -254,7 +254,7 @@ clipLight.on('statusChange', status => {
   } else {
     bot.editMessageReplyMarkup(ADMIN_KEYBOARD.keyboard, {
       chat_id: tuyaStatusMessage.from.id,
-      message_id: tuyaStatusMessage.message.message_id
+      message_id: tuyaStatusMessage.message_id
     });
   }
 
