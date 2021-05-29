@@ -4,6 +4,7 @@ class TuyaDevice {
     #device = Object
     #isConnected = false
     #reconnectInterval = null
+    #status = undefined;
     #eventMap = {
         'statusChange': Function
     }
@@ -11,7 +12,6 @@ class TuyaDevice {
     constructor({ id, key, name }) {
         this.id = id
         this.name = name
-        this.status = undefined
         this.#device = new TuyAPI({ id, key, version: 3.3 })
 
         this.#device.on('connected', () => {
@@ -27,8 +27,6 @@ class TuyaDevice {
         this.#device.on('data', data => {
             if (!data.dps) return
             this.status = data.dps['1'];
-            this.#eventMap.statusChange(this.status);
-            console.log(`[tuya.js] Device "${this.name}" status:`, this.status);
         });
 
         this.#device.on('error', error => {
@@ -56,6 +54,18 @@ class TuyaDevice {
 
     on(eventName, callback) {
         this.#eventMap[eventName] = callback;
+    }
+
+    set status(bool) {
+        if (this.#status === bool) return;
+
+        this.#status = bool;
+        this.#eventMap.statusChange(this.status);
+        console.log(`[tuya.js] Device "${this.name}" status:`, this.status);
+    }
+
+    get status() {
+        return this.#status;
     }
 
     set isConnected(bool) {

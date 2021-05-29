@@ -212,8 +212,6 @@ bot.onText(/^(\d*[.,]?\d+)$/gim, async (msg, match) => {
  * Tuya
  */
 
-let tuyaStatusMessage = undefined;
-
 const ambientLight = require("./model/tuya").ambientLight;
 bot.onText(/подсветка/gi, async msg => {
   if (msg.chat.id !== ADMIN_ID) return;
@@ -222,20 +220,10 @@ bot.onText(/подсветка/gi, async msg => {
 })
 ambientLight.on('statusChange', status => {
   ADMIN_KEYBOARD.setAmbientLightStatus(status);
-
-  if (tuyaStatusMessage === undefined) {
-    bot.sendMessage(ADMIN_ID, `Инициализация Tuya...`, {
-      reply_markup: JSON.stringify(ADMIN_KEYBOARD.keyboard),
-      disable_notification: true
-    }).then(message => tuyaStatusMessage = message)
-  } else {
-    console.log(tuyaStatusMessage);
-    bot.editMessageReplyMarkup(ADMIN_KEYBOARD.keyboard, {
-      chat_id: tuyaStatusMessage.chat.id,
-      message_id: Number.parseInt(tuyaStatusMessage.message_id)
-    });
-  }
-
+  bot.sendMessage(ADMIN_ID, `Подсветка ${status ? 'включена' : 'выключена'}`, {
+    reply_markup: JSON.stringify(ADMIN_KEYBOARD.keyboard),
+    disable_notification: true
+  });
 });
 
 const clipLight = require("./model/tuya").clipLight;
@@ -246,20 +234,10 @@ bot.onText(/клипса/gi, async msg => {
 })
 clipLight.on('statusChange', status => {
   ADMIN_KEYBOARD.setClipLightStatus(status);
-
-  if (tuyaStatusMessage === undefined) {
-    bot.sendMessage(ADMIN_ID, `Инициализация Tuya...`, {
-      reply_markup: JSON.stringify(ADMIN_KEYBOARD.keyboard),
-      disable_notification: true
-    }).then(message => tuyaStatusMessage = message)
-  } else {
-    console.log(tuyaStatusMessage);
-    bot.editMessageReplyMarkup(ADMIN_KEYBOARD.keyboard, {
-      chat_id: tuyaStatusMessage.chat.id,
-      message_id: Number.parseInt(tuyaStatusMessage.message_id)
-    });
-  }
-
+  bot.sendMessage(ADMIN_ID, `Клипса ${status ? 'включена' : 'выключена'}`, {
+    reply_markup: JSON.stringify(ADMIN_KEYBOARD.keyboard),
+    disable_notification: true
+  });
 });
 
 // bot.onText(/off/gi, msg => {
