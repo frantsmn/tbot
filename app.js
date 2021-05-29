@@ -23,3 +23,4 @@ exports.bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
 require('./controller');
 require('./scheduler');
+require('./model/btscan');
