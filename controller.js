@@ -229,9 +229,10 @@ ambientLight.on('statusChange', status => {
       disable_notification: true
     }).then(message => tuyaStatusMessage = message)
   } else {
+    console.log(tuyaStatusMessage);
     bot.editMessageReplyMarkup(ADMIN_KEYBOARD.keyboard, {
-      chat_id: tuyaStatusMessage.chat_id,
-      message_id: tuyaStatusMessage.message_id
+      chat_id: tuyaStatusMessage.from.id,
+      message_id: Number.parseInt(tuyaStatusMessage.message_id)
     });
   }
 
@@ -252,9 +253,10 @@ clipLight.on('statusChange', status => {
       disable_notification: true
     }).then(message => tuyaStatusMessage = message)
   } else {
+    console.log(tuyaStatusMessage);
     bot.editMessageReplyMarkup(ADMIN_KEYBOARD.keyboard, {
-      chat_id: tuyaStatusMessage.chat_id,
-      message_id: tuyaStatusMessage.message_id
+      chat_id: tuyaStatusMessage.from.id,
+      message_id: Number.parseInt(tuyaStatusMessage.message_id)
     });
   }
 
