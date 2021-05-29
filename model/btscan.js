@@ -1,12 +1,16 @@
-var noble = require('noble');
+const Noble = require("noble");
+const BeaconScanner = require("node-beacon-scanner");
 
-noble.startScanning();
+var scanner = new BeaconScanner();
 
-noble.on('discover', function (peripheral) {
+scanner.onadvertisement = (advertisement) => {
+    var beacon = advertisement["iBeacon"];
+    beacon.rssi = advertisement["rssi"];
+    console.log(JSON.stringify(beacon, null, "    "))
+};
 
-    var macAddress = peripheral.uuid;
-    var rss = peripheral.rssi;
-    var localName = peripheral.localName || 'no local name';
-    console.log('found device: ', macAddress, localName, rss);
-
+scanner.startScan().then(() => {
+    console.log("Scanning for BLE devices...")  ;
+}).catch((error) => {
+    console.error(error);
 });
