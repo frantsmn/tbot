@@ -4,7 +4,7 @@ const colorLog = require('node-color-log');
 function makeRecord(prefix, str) {
     const rawDate = new Date();
     const time = rawDate.toLocaleTimeString();
-    const date = rawDate.toLocaleDateString();
+    const date = rawDate.toLocaleDateString('ru');
     const record = `${time} | ${prefix} | ${str}`;
     const message = `${time} | ${str}`;
 
