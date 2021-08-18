@@ -145,68 +145,9 @@ bot.on("message", async msg => {
 // });
 
 
-/**
- * MTS
- */
-const Mts = require('./model/mts');
 
-bot.onText(/mts/gi, async msg => {
-  const messages = await Mts.getMessagesFirestoreByUserId(msg.from.id);
-  messages.forEach(m => {
-    bot.sendMessage(m.id, m.text, m.options);
-    if (msg.from.id !== ADMIN_ID)
-      bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${m.text}`, m.options);
-  });
-});
 
-bot.on("callback_query", async response => {
-  if (JSON.parse(response.data).query_id === "mts") {
-    bot.answerCallbackQuery(response.id, { text: `Обновляю данные...\nЭто может занять несколько секунд`, cache_time: 120, show_alert: true });
-    const messages = await Mts.getMessagesMtsByUserId(response.message.chat.id);
-    if (messages.isArray) {
-      messages.forEach(msg => {
-        bot.sendMessage(msg.id, msg.text, msg.options);
-        if (msg.from.id !== ADMIN_ID)
-          bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${msg.text}`, msg.options);
-      });
-    }
-  }
-});
 
-/**
- * Currency
- */
-const Currency = require("./model/currency");
-
-bot.onText(/Курсы валют/gim, async msg => {
-  const text = await Currency.getCurrency();
-  bot.deleteMessage(msg.chat.id, msg.message_id);
-  bot.sendMessage(msg.chat.id, text, { parse_mode: "Markdown" });
-
-  //TODO Перенсти в логгер
-  logger.log(`Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
-  if (msg.from.id !== ADMIN_ID)
-    bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
-});
-
-bot.onText(/\D*(\d*[.,]?\d+)\s*(\$|€|₽|usd|eur|rub|byn)/gim, async (msg, match) => {
-  const value = parseFloat(match[1].replace(/,/, "."));
-  const abbreviation = match[2];
-  const text = await Currency.getExchange(value, abbreviation);
-  bot.sendMessage(msg.chat.id, text, { parse_mode: "Markdown" });
-
-  //TODO Перенсти в логгер
-  if (msg.from.id !== ADMIN_ID)
-    bot.sendMessage(ADMIN_ID, `Пользователю ${msg.from.first_name} ${msg.chat.id} отправлено сообщение:\n\n${text}`);
-});
-
-bot.onText(/^(\d*[.,]?\d+)$/gim, async (msg, match) => {
-  const value = parseFloat(match[1].replace(/,/, "."));
-  const message = await Currency.getExchange(value);
-  bot.sendMessage(msg.chat.id, message, { parse_mode: "Markdown" });
-
-  //TODO добавить логгер
-});
 
 /**
  * Tuya
@@ -239,10 +180,6 @@ clipLight.on('statusChange', status => {
     disable_notification: true
   });
 });
-
-// bot.onText(/off/gi, msg => {
-//   tyua.off();
-// });
 
 // bot.onText(/^(\d*[.,]?\d+)$/gim, (msg, match) => {
 //   const value = parseFloat(match[1].replace(/,/, "."));

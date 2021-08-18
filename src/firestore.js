@@ -2,7 +2,8 @@ const admin = require("firebase-admin");
 admin.initializeApp({
     credential: admin.credential.cert(FIREBASE_ACCOUNT),
     databaseURL: "https://frog-back.firebaseio.com"
-});
+})
+
 // As an admin, the app has access to read and write all data, regardless of Security Rules
 const firestore = admin.firestore();
 
@@ -24,25 +25,25 @@ exports.setUser = async (user) => {
 }
 
 
-exports.getBeltelecomAccountsByUserId = async (id) => {
-    let accounts = await firestore.collection('beltelecom').where('users', 'array-contains', id).get();
-    let res = [];
-    accounts.forEach(account => res.push(account.data()));
-    return res;
-}
+// exports.getBeltelecomAccountsByUserId = async (id) => {
+//     let accounts = await firestore.collection('beltelecom').where('users', 'array-contains', id).get();
+//     let res = [];
+//     accounts.forEach(account => res.push(account.data()));
+//     return res;
+// }
 
-exports.getAllBeltelecomAccounts = async () => {
-    let accounts = [];
-    const collection = await firestore.collection('beltelecom').get();
-    collection.forEach(doc => accounts.push(doc.data()));
-    return accounts;
-}
+// exports.getAllBeltelecomAccounts = async () => {
+//     let accounts = [];
+//     const collection = await firestore.collection('beltelecom').get();
+//     collection.forEach(doc => accounts.push(doc.data()));
+//     return accounts;
+// }
 
-exports.setAllBeltelecomAccounts = async (data) => {
-    for (const account of data) {
-        await firestore.doc(`beltelecom/${account.login}`).set(account);
-    }
-}
+// exports.setAllBeltelecomAccounts = async (data) => {
+//     for (const account of data) {
+//         await firestore.doc(`beltelecom/${account.login}`).set(account);
+//     }
+// }
 
 
 exports.getMtsAccountsByUserId = async (id) => {
@@ -76,3 +77,4 @@ exports.setMtsAccounts = async (data) => {
         await firestore.doc(`mts/${account.login}`).set(account);
     }
 }
+
