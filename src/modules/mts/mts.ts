@@ -29,11 +29,10 @@ export default class Mts {
 
     private static async openBrowser() {
         try {
-            // { headless: false }
             if (process.platform === "linux")
                 return await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser', args: ['--no-sandbox', '--disable-setuid-sandbox'] })
             else
-                return await puppeteer.launch({ headless: false })
+                return await puppeteer.launch({ headless: true })
 
         } catch (error) {
             logger.log({

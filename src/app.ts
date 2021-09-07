@@ -1,8 +1,8 @@
-import dotenv from 'dotenv'
-import TelegramBot from 'node-telegram-bot-api'
-
 import FIREBASE_ACCOUNT from '@keys/firebase-adminsdk.json'
 import TUYA_DEVICES from '@keys/tuya-devices.json'
+
+import dotenv from 'dotenv'
+import TelegramBot from 'node-telegram-bot-api'
 
 import firebase from './connect-firebase'
 import AppController from './app-controller'
