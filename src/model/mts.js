@@ -1,12 +1,9 @@
 const puppeteer = require('puppeteer');
-const logger = require('../logger');
 const firestore = require('../firestore');
 
 module.exports = class Mts {
     static minUpdateInterval = 600000;
     static minBalance = 1.5;
-
-
 
 
     static async updateAllAccounts() {

@@ -12,7 +12,7 @@ interface LocalDateTime {
 
 interface LogOptions {
     type?: LogType
-    value: string
+    value: string | number | unknown
     isAlertAdmin?: boolean
     // isSaveToStore?: boolean
 }
@@ -49,7 +49,9 @@ export default class Logger {
             localDateTime: this.getLocalDateTime(),
         }
         this.logToConsole(logObject)
+        
         this.logToStore(logObject)
+        this.logToAdmin(logObject)
     }
 
     private logToConsole(logObject: LogObject): void {
@@ -64,6 +66,10 @@ export default class Logger {
     }
 
     private logToStore(logObject: LogObject): void {
-        // console.log('[logger] > TODO: Log to store', logObject);
+        // console.log('[logger] > //TODO: Log to store', logObject);
+    }
+
+    private logToAdmin(logObject: LogObject): void {
+        // console.log('[logger] > //TODO: Log to Admin', logObject);
     }
 }

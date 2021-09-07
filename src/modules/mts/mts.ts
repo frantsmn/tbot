@@ -1,20 +1,19 @@
 import puppeteer from 'puppeteer'
-import MtsFirebase from './mts-firebase'
 import Logger from '@modules/logger/logger'
 const logger = new Logger('mts')
 
-interface Account {
-    login: string
-    password: string
-    balance: string
-    minutes: string
-    traffic: string
-    spent: string
-    needUpdate: boolean
-    timestamp: number
-    isLowBalance: boolean
-    users: Array<number>
-}
+// interface Account {
+//     login: string
+//     password: string
+//     balance: string
+//     minutes: string
+//     traffic: string
+//     spent: string
+//     needUpdate: boolean
+//     timestamp: number
+//     isLowBalance: boolean
+//     users: Array<number>
+// }
 
 interface AccountStatusObject {
     balance: string
@@ -156,7 +155,7 @@ export default class Mts {
         return { balance, traffic, minutes, spent }
     }
 
-    private static async updateAccounts(array: Array<Account>): Promise<Array<Account>> {
+    static async updateAccounts(array: FirebaseFirestore.DocumentData[]): Promise<Array<FirebaseFirestore.DocumentData>> {
         const browser = await this.openBrowser()
 
         for await (let account of array) {
@@ -202,7 +201,7 @@ export default class Mts {
         return array;
     }
 
-    private static createMessage(userId: number, account: Account) {
+    static createMessage(account: FirebaseFirestore.DocumentData) {
         const { login, balance, traffic, minutes, spent, timestamp } = account
         const date = new Date(timestamp).toLocaleDateString()
         const time = new Date(timestamp).toLocaleTimeString()
@@ -230,33 +229,15 @@ export default class Mts {
             })
         } : { parse_mode: "Markdown" }
 
-        return { userId, text, options }
+        return { text, options }
     }
 
-    static async getLowBalanceMessagesFromFirestore() {
-        const userMtsAccounts = await MtsFirebase.getAllMtsAccounts()
-        const messages = userMtsAccounts.reduce((messages, account) =>
-            account.users.forEach(user => messages.push(this.createMessage(user, account))
-            ), [])
-        return messages.filter(message => message.warning)
-    }
-
-    static async getMessagesFromFirestore(userId) {
-        const userAccounts = await MtsFirebase.getMtsAccountsByUserId(userId)
-        if (userAccounts.length)
-            return userAccounts.map(account => this.createMessage(userId, account))
-        return [{
-            id: userId,
-            text: `🐸 Я не знаю ваш логин и пароль от кабинета Mts`,
-            options: { parse_mode: "Markdown" }
-        }]
-    }
-
-    static async getMessagesFromMts(userId) {
-        const userAccounts = await MtsFirebase.getMtsAccountsByUserId(userId)
-        await this.updateAccounts(userAccounts)
-        MtsFirebase.setMtsAccounts(userAccounts)
-        return userAccounts.map(account => this.createMessage(userId, account))
-    }
+    // static async getLowBalanceMessagesFromFirestore() {
+    //     const userAccounts = await MtsFirebase.getAllMtsAccounts()
+    //     const messages = userAccounts.reduce((messages, account) =>
+    //         account.users.forEach(user => messages.push(this.createMessage(user, account))
+    //         ), [])
+    //     return messages.filter(message => message.warning)
+    // }
 
 }

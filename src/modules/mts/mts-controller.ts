@@ -1,18 +1,33 @@
 import Mts from './mts'
+import MtsFirebase from './mts-firebase'
 
 export default class MtsController {
-    constructor(BOT) {
+    constructor(BOT, FIREBASE) {
+
+        const mtsFirebase = new MtsFirebase(FIREBASE);
 
         BOT.onText(/mts/gi, async msg => {
-            const messages = await Mts.getMessagesFromFirestore(msg.from.id)
-            messages.forEach(message => BOT.sendMessage(message.userId, message.text, message.options))
+            const userAccounts = await mtsFirebase.getMtsAccountsByUserId(msg.from.id);
+            if (userAccounts.length === 0) {
+                BOT.sendMessage(msg.from.id, `🐸 Я не знаю ваш логин и пароль от кабинета Mts`);
+                return;
+            }
+            userAccounts
+                .map(account => Mts.createMessage(account))
+                .forEach(message => BOT.sendMessage(msg.from.id, message.text, message.options))
         })
 
         BOT.on("callback_query", async response => {
             if (JSON.parse(response.data).query_id === "mts") {
                 BOT.answerCallbackQuery(response.id, { text: `Обновляю данные...\nЭто может занять несколько секунд`, cache_time: 120, show_alert: true });
-                const messages = await Mts.getMessagesFromMts(response.message.chat.id);
-                messages.forEach(msg => BOT.sendMessage(msg.userId, msg.text, msg.options))
+
+                const userAccounts = await mtsFirebase.getMtsAccountsByUserId(response.message.chat.id)
+                await Mts.updateAccounts(userAccounts);
+                userAccounts
+                    .map(account => Mts.createMessage(account))
+                    .forEach(message => BOT.sendMessage(response.message.chat.id, message.text, message.options));
+                mtsFirebase.setMtsAccounts(userAccounts);
+
             }
         })
 

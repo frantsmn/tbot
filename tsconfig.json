@@ -19,7 +19,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": false,
-    "baseUrl": "src",
+    "baseUrl": "./src",
     "paths": {
       "@/*": [
         "*"
