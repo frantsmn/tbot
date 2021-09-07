@@ -1,9 +1,17 @@
+<<<<<<< HEAD
 import dotenv from 'dotenv'
 import TelegramBot from 'node-telegram-bot-api'
 
 import FIREBASE_ACCOUNT from './keys/firebase-adminsdk.json'
 import TUYA_DEVICES from './keys/tuya-devices.json'
 import USER_DEVICES from './keys/user-devices.json'
+=======
+import FIREBASE_ACCOUNT from '@keys/firebase-adminsdk.json'
+import TUYA_DEVICES from '@keys/tuya-devices.json'
+>>>>>>> 1cc944a (Фиксы)
+
+import dotenv from 'dotenv'
+import TelegramBot from 'node-telegram-bot-api'
 
 import firebase from './connect-firebase'
 import AppController from './app-controller'
