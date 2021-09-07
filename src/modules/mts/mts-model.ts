@@ -1,6 +1,10 @@
 import puppeteer from 'puppeteer'
 import Logger from '@modules/logger/logger'
+<<<<<<< HEAD:src/modules/mts/mts-model.ts
 const logger = new Logger('mts-model')
+=======
+const logger = new Logger('mts')
+>>>>>>> bd10b55 (Рефакторинг модуля mts):src/modules/mts/mts.ts
 
 // interface Account {
 //     login: string
@@ -233,5 +237,16 @@ export default class MtsModel {
 
         return { text, options }
     }
+<<<<<<< HEAD:src/modules/mts/mts-model.ts
+=======
+
+    // static async getLowBalanceMessagesFromFirestore() {
+    //     const userAccounts = await MtsFirebase.getAllMtsAccounts()
+    //     const messages = userAccounts.reduce((messages, account) =>
+    //         account.users.forEach(user => messages.push(this.createMessage(user, account))
+    //         ), [])
+    //     return messages.filter(message => message.warning)
+    // }
+>>>>>>> bd10b55 (Рефакторинг модуля mts):src/modules/mts/mts.ts
 
 }

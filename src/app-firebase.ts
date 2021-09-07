@@ -12,7 +12,11 @@ export default class AppFirebase {
         logger.log({
             value: `Получение аккаунтa пользователя ${userId} из firebase`,
             type: 'info',
+<<<<<<< HEAD
         });
+=======
+        })
+>>>>>>> bd10b55 (Рефакторинг модуля mts)
         const user = await this.FIREBASE.doc(`users/${userId}`).get();
         return user.data();
     }
@@ -21,7 +25,11 @@ export default class AppFirebase {
         logger.log({
             value: `Добавление аккаунтa пользователя ${user.id} в firebase`,
             type: 'info',
+<<<<<<< HEAD
         });
+=======
+        })
+>>>>>>> bd10b55 (Рефакторинг модуля mts)
         await this.FIREBASE.doc(`users/${user.id}`).set(user, { merge: true });
     }
 }
