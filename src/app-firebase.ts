@@ -12,7 +12,7 @@ export default class AppFirebase {
         logger.log({
             value: `Получение аккаунтa пользователя ${userId} из firebase`,
             type: 'info',
-        })
+        });
         const user = await this.FIREBASE.doc(`users/${userId}`).get();
         return user.data();
     }
@@ -21,7 +21,7 @@ export default class AppFirebase {
         logger.log({
             value: `Добавление аккаунтa пользователя ${user.id} в firebase`,
             type: 'info',
-        })
+        });
         await this.FIREBASE.doc(`users/${user.id}`).set(user, { merge: true });
     }
 }
