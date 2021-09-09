@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer'
 import Logger from '@modules/logger/logger'
-const logger = new Logger('mts')
+const logger = new Logger('mts-model')
 
 // interface Account {
 //     login: string
@@ -22,7 +22,7 @@ interface AccountStatusObject {
     spent: string
 }
 
-export default class Mts {
+export default class MtsModel {
 
     private static MIN_UPDATE_INTERVAL = 600000
     private static MIN_BALANCE = 1.5
@@ -171,6 +171,7 @@ export default class Mts {
 
                 if (accountStatusObject.balance) {
                     account = Object.assign(account, accountStatusObject, {
+                        needUpdate: false,
                         timestamp: Date.now(),
                         isLowBalance: accountStatusObject.balance !== undefined && parseFloat(accountStatusObject.balance) < this.MIN_BALANCE
                     })
@@ -190,7 +191,7 @@ export default class Mts {
 
             } else {
                 logger.log({
-                    value: `Аккаунт [${account.login}] уже обновлялся ${this.MIN_UPDATE_INTERVAL / 60000} минут назад`,
+                    value: `Аккаунт [${account.login}] уже обновлялся в течение ${this.MIN_UPDATE_INTERVAL / 60000} минут`,
                     type: 'warn',
                 })
             }
@@ -202,6 +203,8 @@ export default class Mts {
 
     static createMessage(account: FirebaseFirestore.DocumentData) {
         const { login, balance, traffic, minutes, spent, timestamp } = account
+        console.log(account);
+
         const date = new Date(timestamp).toLocaleDateString()
         const time = new Date(timestamp).toLocaleTimeString()
         const isLowBalance = parseFloat(balance) <= this.MIN_BALANCE;
@@ -216,7 +219,7 @@ export default class Mts {
 Минуты: ${minutes} мин.
 Израсходовано ${spent}\``;
 
-        const options = isRecentlyUpdated === false ? {
+        const options: any = isRecentlyUpdated === false ? {
             parse_mode: "Markdown",
             reply_markup: JSON.stringify({
                 inline_keyboard: [
@@ -230,13 +233,5 @@ export default class Mts {
 
         return { text, options }
     }
-
-    // static async getLowBalanceMessagesFromFirestore() {
-    //     const userAccounts = await MtsFirebase.getAllMtsAccounts()
-    //     const messages = userAccounts.reduce((messages, account) =>
-    //         account.users.forEach(user => messages.push(this.createMessage(user, account))
-    //         ), [])
-    //     return messages.filter(message => message.warning)
-    // }
 
 }

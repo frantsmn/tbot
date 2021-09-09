@@ -5,7 +5,7 @@ const logger = new Logger('currency')
 
 type AbbrRaw = '$' | 'USD' | '€' | 'EUR' | '₽' | 'RUB'
 
-export default class Currency {
+export default class CurrencyModel {
 
     private static ERROR_MESSAGE: string = 'Произошла ошибка!\nПопробуйте позже или перейдите на сайт:\nhttps://myfin.by/currency/minsk'
     private static API_URL: string = 'http://www.nbrb.by/API/ExRates/Rates'
