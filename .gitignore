@@ -8,9 +8,10 @@ logs
 # Dependency directories
 node_modules/
 
-# dotenv environment variables file
+# dotenv environment variables file & keys
 .env
 .env.test
+src/keys
 
 # keys & secrets
 firebase-adminsdk.json
@@ -18,3 +19,6 @@ tuya-devices.json
 
 # Editors
 .vscode
+
+#build
+/dist
