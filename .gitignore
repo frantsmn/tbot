@@ -22,3 +22,8 @@ tuya-devices.json
 
 #build
 /dist
+# keys
+firebase-adminsdk.json
+
+src/keys
+dist
