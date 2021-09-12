@@ -1,7 +1,7 @@
 {
   "name": "tbot",
-  "version": "1.0.0",
-  "description": "Personal Telegram bot",
+  "version": "2.0.0",
+  "description": "Personal Telegram Bot",
   "main": "app.js",
   "author": "Frants Mitskun",
   "license": "ISC",
@@ -10,19 +10,35 @@
     "url": "https://github.com/frantsmn/tbot.git"
   },
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon dist/app.js",
+    "dev:ts": "tsc -w",
+    "dev:al": "tsc-alias -w -f"
   },
   "dependencies": {
-    "@abandonware/bleno": "^0.5.1-4",
+    "@types/node": "^16.6.1",
+    "@types/node-schedule": "^1.3.2",
     "arpscan": "^1.0.2",
-    "dotenv": "^8.6.0",
+    "dotenv": "^10.0.0",
     "firebase-admin": "^9.5.0",
-    "node-color-log": "^5.2.0",
+    "node-color-log": "^5.3.1",
     "node-fetch": "^2.6.1",
-    "node-schedule": "^1.3.3",
-    "node-telegram-bot-api": "^0.30.0",
-    "nodemon": "^2.0.7",
-    "puppeteer": "^1.20.0",
+    "node-schedule": "^2.0.0",
+    "node-telegram-bot-api": "^0.54.0",
+    "nodemon": "^2.0.12",
+    "puppeteer": "^10.2.0",
     "tuyapi": "github:codetheweb/tuyapi"
+  },
+  "devDependencies": {
+    "@types/node-telegram-bot-api": "^0.51.4",
+    "tsc-alias": "^1.3.8",
+    "typescript": "^4.3.5"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "./src",
+      ".git",
+      "node_modules/**/node_modules",
+      "README"
+    ]
   }
 }

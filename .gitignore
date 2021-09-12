@@ -14,6 +14,7 @@ node_modules/
 src/keys
 
 # keys & secrets
+keys
 firebase-adminsdk.json
 tuya-devices.json
 
@@ -26,4 +27,6 @@ tuya-devices.json
 firebase-adminsdk.json
 
 src/keys
+dist
+#dist
 dist
