@@ -19,6 +19,7 @@ const BOT = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
 
 new AppController(BOT, FIREBASE, ADMIN_ID)
 
+// Modules
 new Currency(BOT)
 new Mts(BOT, FIREBASE)
-new IoT(TUYA_DEVICES, USER_DEVICES, BOT)
+new IoT(TUYA_DEVICES, USER_DEVICES, BOT, ADMIN_ID)

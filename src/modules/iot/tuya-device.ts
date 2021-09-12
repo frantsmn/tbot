@@ -2,10 +2,6 @@ import TuyAPI from 'tuyapi'
 import Logger from '@modules/logger/logger'
 const logger = new Logger('tuya-device')
 
-// Наименования событий к которым можно привязать коллбэки
-enum Events {
-    "statusChange"
-}
 
 interface EventMap {
     statusChange: Function
@@ -33,7 +29,7 @@ export default class TuyaDevice {
                 value: `Устройство «${this.name}» подключено!`,
                 type: 'info'
             });
-            this.isConnected = true;
+            this.#isConnected = true;
         });
 
         this.#device.on('disconnected', () => {
@@ -41,7 +37,7 @@ export default class TuyaDevice {
                 value: `Устройство «${this.name}» отключено!`,
                 type: 'info'
             });
-            this.isConnected = false;
+            this.#isConnected = false;
 
             logger.log({
                 value: `Переподключение к устройству «${this.name}» через 10 секунд...`,
@@ -53,7 +49,7 @@ export default class TuyaDevice {
 
         this.#device.on('data', data => {
             if (!data.dps) return
-            this.status = data.dps['1'];
+            this.#status = data.dps['1'];
         });
 
         this.#device.on('error', error => {
@@ -79,34 +75,32 @@ export default class TuyaDevice {
     }
 
     async toggle(): Promise<boolean | null> {
-        if (!this.isConnected) return null;
-        const data = await this.#device.set({ set: !this.status });
-        if (data) this.status = data.dps['1'];
-        return this.status;
+        if (!this.#isConnected) return null;
+        const data = await this.#device.set({ set: !this.#status });
+        if (data) this.#status = data.dps['1'];
+        return this.#status;
     }
 
-    on(eventName: Events, callback: Function) {
+    async turnOn(): Promise<boolean | null> {
+        if (!this.#isConnected) return null;
+        const data = await this.#device.set({ set: true });
+        if (data) this.#status = data.dps['1'];
+        return this.#status;
+    }
+
+    async turnOff(): Promise<boolean | null> {
+        if (!this.#isConnected) return null;
+        const data = await this.#device.set({ set: false });
+        if (data) this.#status = data.dps['1'];
+        return this.#status;
+    }
+
+    on(eventName: 'statusChange', callback: Function) {
         this.#eventMap[eventName] = callback;
-    }
-
-    set status(newStatus) {
-        if (this.#status === newStatus) return;
-
-        this.#status = newStatus;
-        this.#eventMap.statusChange(this.status);
-
-        logger.log({
-            value: `Устройство «${this.name}» ${this.status ? '🟡 включено' : '⚫ выключено'}`,
-            type: 'info'
-        });
     }
 
     get status() {
         return this.#status;
-    }
-
-    set isConnected(value) {
-        this.#isConnected = value;
     }
 
     get isConnected() {

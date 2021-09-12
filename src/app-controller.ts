@@ -1,42 +1,13 @@
-import TelegramBot, { ReplyKeyboardMarkup } from "node-telegram-bot-api";
-
+import TelegramBot from "node-telegram-bot-api";
+import { ADMIN_KEYBOARD, USER_KEYBOARD } from "./app-keyboards";
 import Logger from '@modules/logger/logger'
 const logger = new Logger('app-controller')
 import AppFirebase from './app-firebase'
 
 export default class AppController {
-  
+
   constructor(BOT: TelegramBot, FIREBASE: FirebaseFirestore.Firestore, ADMIN_ID: number) {
-    interface IAdminKeyboard {
-      keyboard: ReplyKeyboardMarkup
-      setClipLightStatus: Function
-      setAmbientLightStatus: Function
-    }
-
-    const ADMIN_KEYBOARD: IAdminKeyboard = {
-      keyboard: {
-        keyboard: [
-          [{ text: "Курсы валют" }],
-          [{ text: "⚫ Клипса" }, { text: "⚫ Подсветка" }],
-        ],
-        resize_keyboard: true,
-      },
-
-      setClipLightStatus(status) {
-        this.keyboard.keyboard[1][0].text = status ? "🟡 Клипса" : "⚫ Клипса";
-      },
-
-      setAmbientLightStatus(status) {
-        this.keyboard.keyboard[1][1].text = status ? "🟡 Подсветка" : "⚫ Подсветка";
-      }
-
-    }
-
-    const USER_KEYBOARD: ReplyKeyboardMarkup = {
-      keyboard: [[{ text: "Курсы валют" }], [{ text: "Баланс MTS" }]],
-      resize_keyboard: true,
-    }
-
+    
     // Приветствие
     BOT.onText(/\/start/, msg => {
       switch (msg.chat.id) {

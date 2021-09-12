@@ -1,59 +1,50 @@
 import schedule from 'node-schedule'
 import UserDeviceScan from './user-device-scan'
 import Logger from '@modules/logger/logger'
+import TuyaDevice from './tuya-device'
 const logger = new Logger('iot-scheduler')
 
 export default class IoTScheduler {
-    BOT: any
-    constructor(USER_DEVICES, { clipLight, ambientLight }) {
+    constructor(USER_DEVICES, tyuaDevices: { clipLight: TuyaDevice, ambientLight: TuyaDevice }) {
         const nokiaSevenPlus = USER_DEVICES[0];
+        const { clipLight, ambientLight } = tyuaDevices;
 
-        schedule.scheduleJob('*/1 * * * *', lightScheduler);
+        schedule.scheduleJob('*/1 * * * *', lightOnByUserDevice);
+        schedule.scheduleJob({ hour: 1, minute: 0 }, lightOffBySchedule);
 
-        function lightScheduler() {
-            const now = new Date().getHours()
+        function lightOnByUserDevice() {
+            const now = new Date().getHours();
 
-            // 1. По наличию телефона
             UserDeviceScan
                 .scanDevice(nokiaSevenPlus)
-                .then(result => {
-
+                .then(isDeviceAvailable => {
                     // Если телефон найден
-                    if (result) {
+                    if (isDeviceAvailable) {
                         /* От 19:00 до 22:00 и если свет выключен */
                         if (now >= 19 && now <= 22 && ambientLight.status === false) {
                             // Включить свет
                             ambientLight.toggle();
-                            // TODO Прикрутить logger
-                            console.log('[scheduler.js] Ambient lights turn on! (20:00 - 22:00) [phone at home + lights was off])');
+                            logger.log({
+                                value: `⌛ Устройство «${ambientLight.name}» 🟡 включено по наличию телефона (от 19:00 до 22:00)`,
+                                type: 'info'
+                            });
                         }
                     }
-
                 })
-                // TODO Прикрутить logger
-                .catch(error => console.log('[scheduler.js] checkDevice() error: ', error));
+                .catch(error =>
+                    logger.log({
+                        value: `Произошла ошибка при выполнении lightOnByUserDevice. ${error}`,
+                        type: 'error'
+                    }));
+        }
 
-
-            // 2. По расписанию
-
-            // TODO Сделать простое выключение света в определенное время
-            /* От 01:00 до 05:00 если AMBIENT свет включен */
-            if (now >= 1 && now <= 5 && ambientLight.status === true) {
-                // выключить свет
-                ambientLight.toggle();
-                // TODO Прикрутить logger
-                console.log('[scheduler.js] Ambient lights turn off! (01:00 - 05:00) [light was on])');
-            }
-
-            // TODO Сделать простое выключение света в определенное время
-            /* От 01:00 до 05:00 если CLIPLIGHT свет включен */
-            if (now >= 1 && now <= 5 && clipLight.status === true) {
-                // выключить свет
-                clipLight.toggle();
-                // TODO Прикрутить logger
-                console.log('[scheduler.js] Ambient lights turn off! (01:00 - 05:00) [light was on]');
-            }
-
+        function lightOffBySchedule() {
+            clipLight.turnOff();
+            ambientLight.turnOff();
+            logger.log({
+                value: `⌛ Устройства «${ambientLight.name}» ⚫ и «${clipLight.name}» выключены по расписанию (01:00)`,
+                type: 'info'
+            });
         }
 
     }
