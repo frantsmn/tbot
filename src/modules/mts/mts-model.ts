@@ -1,14 +1,6 @@
 import puppeteer from 'puppeteer'
 import Logger from '@modules/logger/logger'
-<<<<<<< HEAD:src/modules/mts/mts-model.ts
-<<<<<<< HEAD:src/modules/mts/mts-model.ts
 const logger = new Logger('mts-model')
-=======
-const logger = new Logger('mts')
->>>>>>> bd10b55 (Рефакторинг модуля mts):src/modules/mts/mts.ts
-=======
-const logger = new Logger('mts-model')
->>>>>>> 6bdb869 (refactoring):src/modules/mts/mts.ts
 
 // interface Account {
 //     login: string
@@ -211,8 +203,6 @@ export default class MtsModel {
 
     static createMessage(account: FirebaseFirestore.DocumentData) {
         const { login, balance, traffic, minutes, spent, timestamp } = account
-        console.log(account);
-
         const date = new Date(timestamp).toLocaleDateString()
         const time = new Date(timestamp).toLocaleTimeString()
         const isLowBalance = parseFloat(balance) <= this.MIN_BALANCE;
@@ -241,10 +231,6 @@ export default class MtsModel {
 
         return { text, options }
     }
-<<<<<<< HEAD:src/modules/mts/mts-model.ts
-=======
-
-<<<<<<< HEAD:src/modules/mts/mts-model.ts
     // static async getLowBalanceMessagesFromFirestore() {
     //     const userAccounts = await MtsFirebase.getAllMtsAccounts()
     //     const messages = userAccounts.reduce((messages, account) =>
@@ -252,8 +238,4 @@ export default class MtsModel {
     //         ), [])
     //     return messages.filter(message => message.warning)
     // }
->>>>>>> bd10b55 (Рефакторинг модуля mts):src/modules/mts/mts.ts
-
-=======
->>>>>>> 6bdb869 (refactoring):src/modules/mts/mts.ts
 }
