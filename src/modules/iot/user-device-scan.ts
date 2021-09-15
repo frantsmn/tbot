@@ -13,11 +13,11 @@ export default class UserDeviceScan {
     static scanDevice({ name, mac_wifi }: UserDevice): Promise<boolean | null> {
 
         if (process.platform !== "linux") return Promise.resolve(null);
-
-        logger.log({
-            value: `Поиск устройства «${name}»...`,
-            type: 'log'
-        });
+        
+        // logger.log({
+        //     value: `Поиск устройства «${name}»...`,
+        //     type: 'log'
+        // });
 
         return new Promise((resolve, reject) => {
 

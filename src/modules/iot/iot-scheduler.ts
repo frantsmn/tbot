@@ -20,12 +20,12 @@ export default class IoTScheduler {
                 .then(isDeviceAvailable => {
                     // Если телефон найден
                     if (isDeviceAvailable) {
-                        /* От 19:00 до 22:00 и если свет выключен */
-                        if (now >= 19 && now <= 22 && ambientLight.status === false) {
+                        /* От 19:00 до 21:59 и если свет выключен */
+                        if (now >= 18 && now <= 21 && ambientLight.status === false) {
                             // Включить свет
-                            ambientLight.toggle();
+                            ambientLight.turnOn();
                             logger.log({
-                                value: `⌛ Устройство «${ambientLight.name}» 🟡 включено по наличию телефона (от 19:00 до 22:00)`,
+                                value: `⌛ Устройство «${ambientLight.name}» 🟡 включено по наличию телефона (от 18:00 до 21:59)`,
                                 type: 'info'
                             });
                         }
