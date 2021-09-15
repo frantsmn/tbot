@@ -64,16 +64,14 @@ export default class AppController {
 
     // Трекинг пользователей
     const appFirebase = new AppFirebase(FIREBASE);
-    const getUserByUserId = appFirebase.getUserByUserId;
-    const setUser = appFirebase.setUser;
 
     BOT.on("message", async msg => {
       if (msg.from.id === ADMIN_ID) return;
 
       // Проверка на нового пользователя
-      let user = await getUserByUserId(msg.from.id);
+      let user = await appFirebase.getUserByUserId(msg.from.id);
       if (!user?.hasOwnProperty("is_bot")) {
-        setUser(msg.from);
+        appFirebase.setUser(msg.from);
         logger.log({
           value: `В базу добавлен пользователь\n\n${JSON.stringify(msg.from.first_name)}`,
           type: 'info',

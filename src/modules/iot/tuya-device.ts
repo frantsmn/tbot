@@ -50,6 +50,7 @@ export default class TuyaDevice {
         this.#device.on('data', data => {
             if (!data.dps) return
             this.#status = data.dps['1'];
+            this.#eventMap.statusChange(this.status);
         });
 
         this.#device.on('error', error => {

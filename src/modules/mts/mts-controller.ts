@@ -11,18 +11,6 @@ export default class MtsController {
             }
             userAccounts
                 .map(account => MtsModel.createMessage(account))
-
-export default class MtsController {
-    constructor(BOT, MTS_FIREBASE) {
-
-        BOT.onText(/mts/gi, async msg => {
-            const userAccounts = await MTS_FIREBASE.getMtsAccountsByUserId(msg.from.id);
-            if (userAccounts.length === 0) {
-                BOT.sendMessage(msg.from.id, `🐸 Я не знаю ваш логин и пароль от кабинета MTS`);
-                return;
-            }
-            userAccounts
-                .map(account => MtsModel.createMessage(account))
                 .forEach(message => BOT.sendMessage(msg.from.id, message.text, message.options))
         })
 
