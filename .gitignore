@@ -1,6 +1,3 @@
-# Data
-*.db.*
-
 # Logs
 logs
 .log
@@ -8,25 +5,13 @@ logs
 # Dependency directories
 node_modules/
 
-# dotenv environment variables file & keys
+# dotenv environment variables & keys
 .env
 .env.test
 src/keys
-
-# keys & secrets
-keys
-firebase-adminsdk.json
-tuya-devices.json
 
 # Editors
 .vscode
 
 #build
 /dist
-# keys
-firebase-adminsdk.json
-
-src/keys
-dist
-#dist
-dist
