@@ -11,12 +11,14 @@
   },
   "scripts": {
     "start": "nodemon dist/app.js",
+    "build": "run-s build:ts build:al",
+    "build:ts": "tsc --project tsconfig.json",
+    "build:al": "tsc-alias --project tsconfig.json",
+    "dev": "run-p dev:ts dev:al start",
     "dev:ts": "tsc -w",
     "dev:al": "tsc-alias -w -f"
   },
   "dependencies": {
-    "@types/node": "^16.6.1",
-    "@types/node-schedule": "^1.3.2",
     "arpscan": "^1.0.2",
     "dotenv": "^10.0.0",
     "firebase-admin": "^9.5.0",
@@ -29,11 +31,15 @@
     "tuyapi": "github:codetheweb/tuyapi"
   },
   "devDependencies": {
+    "@types/node": "^16.6.1",
+    "@types/node-schedule": "^1.3.2",
     "@types/node-telegram-bot-api": "^0.51.4",
+    "npm-run-all": "^4.1.5",
     "tsc-alias": "^1.3.8",
     "typescript": "^4.3.5"
   },
   "nodemonConfig": {
+    "delay": 2000,
     "ignore": [
       "./src",
       ".git",
