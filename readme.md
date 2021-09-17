@@ -1,7 +1,7 @@
-## Разработка
+## TBOT 2.0
 
-`npm start` — live reload
+`npm start` — run app
 
-`npm run dev:ts` — ts compiler
+`npm run dev` — live reload
 
-`npm run dev:al` — ts-alias replacer
+`npm run build` — build app
