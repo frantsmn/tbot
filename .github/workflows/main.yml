@@ -35,7 +35,7 @@ jobs:
           REMOTE_USER: "${{ secrets.USERNAME }}"
           REMOTE_PORT: "${{ secrets.PORT }}"
           REMOTE_PASSWORD: "${{ secrets.PASSWORD }}"
-          REMOTE_PATH: "${{ secrets.REMOTE_PATH }}"
+          REMOTE_PATH: "/home/pi/dev"
           SOURCE: "/"
         
 #       - name: ssh deploy
