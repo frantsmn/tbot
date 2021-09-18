@@ -31,10 +31,10 @@ jobs:
         id: funny-deploy
         uses: BoatNg/funny-deploy@master
         env:
-          REMOTE_HOST: "pifr.duckdns.org"
+          REMOTE_HOST: "178.122.229.223"
           REMOTE_USER: "pi"
           REMOTE_PASSWORD: "${{ secrets.PASSWORD }}"
-          REMOTE_PATH: "${{secrets.REMOTE_PATH}}"
+          REMOTE_PATH: "${{ secrets.REMOTE_PATH }}"
           SOURCE: "/"  
         
 #       - name: ssh deploy
