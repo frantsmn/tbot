@@ -31,8 +31,8 @@ jobs:
         id: funny-deploy
         uses: BoatNg/funny-deploy@master
         env:
-          REMOTE_HOST: "${{ secrets.HOST }}"
-          REMOTE_USER: "${{ secrets.USERNAME }}"
+          REMOTE_HOST: "pifr.duckdns.org"
+          REMOTE_USER: "pi"
           REMOTE_PASSWORD: "${{ secrets.PASSWORD }}"
           REMOTE_PATH: "${{secrets.REMOTE_PATH}}"
           SOURCE: "/"  
