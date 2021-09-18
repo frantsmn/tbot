@@ -37,6 +37,7 @@ jobs:
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
           local_path: './*'
           remote_path: ${{secrets.REMOTE_PATH}}
+          args: '-o ConnectTimeout=5'
           #args: # optional
 
       # Runs a set of commands using the runners shell
