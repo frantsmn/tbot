@@ -27,19 +27,7 @@ jobs:
       - name: Deploy message
         run: echo Deploy started...
         
-      - name: SFTP Deploy
-        # You may pin to the exact commit or the version.
-        # uses: wlixcc/SFTP-Deploy-Action@28d6168ebf0707d5c118b3bbdfb831b56046127c
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.1
-        with:
-          username: ${{secrets.USERNAME}}
-          server: ${{secrets.HOST}}
-          ssh_private_key: ${{secrets.SSH_PRIVATE_KEY}} 
-          local_path: './*'
-          remote_path: ${{secrets.REMOTE_PATH}}
-          args: '-o ConnectTimeout=5'
-          #args: # optional
-          
+        
       - name: ls -a via ssh
         uses: garygrossgarten/github-action-ssh@release
         with:
