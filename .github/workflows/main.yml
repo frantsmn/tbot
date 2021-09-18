@@ -34,7 +34,7 @@ jobs:
         with:
           username: ${{ secrets.USERNAME }}
           server: ${{secrets.HOST}}
-          ssh_private_key: ${{secrets.PASSWORD}}
+          password: ${{secrets.PASSWORD}}
           local_path: './*'
           remote_path: ${{secrets.REMOTE_PATH}}
           #args: # optional
