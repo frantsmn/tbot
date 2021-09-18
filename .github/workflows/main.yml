@@ -34,7 +34,7 @@ jobs:
           REMOTE_HOST: "178.122.229.223"
           REMOTE_USER: "pi"
           REMOTE_PORT: "2200"
-          REMOTE_PASSWORD: "${{ secret.PASSWORD }}"
+          REMOTE_PASSWORD: "${{ secrets.PASSWORD }}"
           REMOTE_PATH: "home/pi"
           SOURCE: "/"
         
