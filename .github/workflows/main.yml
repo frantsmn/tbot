@@ -36,7 +36,7 @@ jobs:
           REMOTE_PORT: "2200"
           REMOTE_PASSWORD: "${{ secret.PASSWORD }}"
           REMOTE_PATH: "home/pi"
-          SOURCE: "/"  
+          SOURCE: "/"
         
 #       - name: ssh deploy
 #         # You may pin to the exact commit or the version.
