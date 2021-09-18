@@ -33,7 +33,8 @@ jobs:
         env:
           REMOTE_HOST: "178.122.229.223"
           REMOTE_USER: "pi"
-          REMOTE_PASSWORD: "1234"
+          REMOTE_PORT: "2200"
+          REMOTE_PASSWORD: "${{ secret.PASSWORD }}"
           REMOTE_PATH: "home/pi"
           SOURCE: "/"  
         
