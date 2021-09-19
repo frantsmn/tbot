@@ -1,21 +1,28 @@
+import path from 'path'
 import dotenv from 'dotenv'
 import TelegramBot from 'node-telegram-bot-api'
 
-import FIREBASE_ACCOUNT from './keys/firebase-adminsdk.json'
-import TUYA_DEVICES from './keys/tuya-devices.json'
-import USER_DEVICES from './keys/user-devices.json'
+const ENV_PATH = path.resolve(require('os').homedir(), '.tbot/.env')
+const KEYS_PATH = path.resolve(require('os').homedir(), '.tbot/keys/')
+const FIREBASE_ACCOUNT_PATH = path.resolve(KEYS_PATH, 'firebase-adminsdk.json')
+const TUYA_DEVICES_PATH = path.resolve(KEYS_PATH, 'tuya-devices.json')
+const USER_DEVICES_PATH = path.resolve(KEYS_PATH, 'user-devices.json')
+
+const FIREBASE_ACCOUNT = require(FIREBASE_ACCOUNT_PATH)
+const TUYA_DEVICES = require(TUYA_DEVICES_PATH)
+const USER_DEVICES = require(USER_DEVICES_PATH)
 
 import firebase from './connect-firebase'
 import AppController from './app-controller'
 
-import Mts from "./modules/mts/index";
+import Mts from "./modules/mts/index"
 import Currency from './modules/currency/index'
 import IoT from './modules/iot/index'
 
-dotenv.config()
+dotenv.config({path: ENV_PATH})
 const ADMIN_ID = parseInt(process.env.ADMIN_ID)
 const FIREBASE = firebase(FIREBASE_ACCOUNT)
-const BOT = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
+const BOT = new TelegramBot(process.env.BOT_TOKEN, {polling: true})
 
 new AppController(BOT, FIREBASE, ADMIN_ID)
 
