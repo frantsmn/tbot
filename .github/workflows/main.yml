@@ -7,30 +7,18 @@ on:
     branches: [ master ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-#       - name: Upload files
-        # You may pin to the exact commit or the version.
-        # uses: wangyucode/sftp-upload-action@24f8bb83383dc39bed201ee5da01475e6c38c568
-#         uses: wangyucode/sftp-upload-action@v1.1
-#         with:
-#           host: "${{ secrets.HOST }}"
-#           port: "${{ secrets.PORT }}"
-#           username: "${{ secrets.USERNAME }}"
-#           password: "${{ secrets.PASSWORD }}"
-#           localDir: "/"
-#           remoteDir: "/home/pi/dev/tbot"
-          
       - name: Upload files
         uses: sand4rt/ftp-deployer@v1.3
         with:
@@ -43,10 +31,10 @@ jobs:
           local_folder: './' # optional, local path, default is: dist
           cleanup: false # optional, remove existing files inside FTP remote folder
           include: '["src/**", "package.json", "tsconfig.json"]'
-#           exclude: [] # optional, e.g. ['node_modules/**', '.git/**', '*.env']
+          #exclude: [] # optional, e.g. ['node_modules/**', '.git/**', '*.env']
           pasive: true # optional
 
-      - name: install & build
+      - name: Install dependencies & build
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: cd ~/dev/tbot && npm i && npm run build
@@ -55,5 +43,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           passphrase: ${{ secrets.PASSPHRASE }}
           privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
-#         env:
-#           CI: true
+            #env:
+          #CI: true

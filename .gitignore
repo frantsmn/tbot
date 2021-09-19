@@ -5,13 +5,12 @@ logs
 # Dependency directories
 node_modules/
 
-# dotenv environment variables & keys
+# dotenv environment variables
 .env
-.env.test
-src/keys
 
 # Editors
 .vscode
+.idea
 
 #build
 /dist
