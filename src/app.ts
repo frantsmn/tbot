@@ -30,3 +30,5 @@ new AppController(BOT, FIREBASE, ADMIN_ID)
 new Currency(BOT)
 new Mts(BOT, FIREBASE)
 new IoT(TUYA_DEVICES, USER_DEVICES, BOT, ADMIN_ID)
+
+console.log('tbot 2.0')
