@@ -2,7 +2,6 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ master ]
   pull_request:
@@ -56,6 +55,17 @@ jobs:
           localDir: "/"
           # 
           remoteDir: "/home/pi/dev/tbot"
+          
+      - name: ls -a via OPEN SSH Private Key
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: ls -a
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSPHRASE }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
+        env:
+          CI: true
           
           
 #       - name: SFTP Deploy
