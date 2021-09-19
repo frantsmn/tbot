@@ -37,26 +37,45 @@ jobs:
 #           REMOTE_PASSWORD: "${{ secrets.PASSWORD }}"
 #           REMOTE_PATH: "/home/pi/dev"
 #           SOURCE: "/"
-          
-          
-      - name: SFTP Deploy
-      # You may pin to the exact commit or the version.
-      # uses: wlixcc/SFTP-Deploy-Action@28d6168ebf0707d5c118b3bbdfb831b56046127c
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.1
+
+
+      - name: SFTP uploader
+        # You may pin to the exact commit or the version.
+        # uses: wangyucode/sftp-upload-action@24f8bb83383dc39bed201ee5da01475e6c38c568
+        uses: wangyucode/sftp-upload-action@v1.1
         with:
-          # username
-          username: "${{ secrets.USERNAME }}"
-          # your sftp server
-          server: "${{ secrets.HOST }}"
-          # your sftp server port, default to 22
+          # 
+          host: "${{ secrets.HOST }}"
+          # 
           port: "${{ secrets.PORT }}"
-          # you can copy private_key from your *.pem file, keep format
-          ssh_private_key: "${{ secrets.SSH_PRIVATE_KEY }}"
-          # will put all file under this path
-#           local_path: # default is ./*
-          # files will copy to under remote_path
-          remote_path: "/home/pi/dev"
-          # sftp args
+          # 
+          username: "${{ secrets.USERNAME }}"
+          # 
+          password: "${{ secrets.PASSWORD }}"
+          # 
+          localDir: "/"
+          # 
+          remoteDir: "/home/pi/dev"
+          
+          
+#       - name: SFTP Deploy
+#       # You may pin to the exact commit or the version.
+#       # uses: wlixcc/SFTP-Deploy-Action@28d6168ebf0707d5c118b3bbdfb831b56046127c
+#         uses: wlixcc/SFTP-Deploy-Action@v1.2.1
+#         with:
+#           # username
+#           username:
+#           # your sftp server
+#           server: 
+#           # your sftp server port, default to 22
+#           port:
+#           # you can copy private_key from your *.pem file, keep format
+#           ssh_private_key: "${{ secrets.SSH_PRIVATE_KEY }}"
+#           # will put all file under this path
+# #           local_path: # default is ./*
+#           # files will copy to under remote_path
+#           remote_path: 
+#           # sftp args
 #           args: # optional
         
 #       - name: ssh deploy
