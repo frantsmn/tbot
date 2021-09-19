@@ -61,6 +61,7 @@ jobs:
         with:
           command: ls -a
           host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSPHRASE }}
           privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
