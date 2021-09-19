@@ -24,19 +24,40 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: Deploy message
-        run: echo Deploy started...
+#       - name: Deploy message
+#         run: echo Deploy started...
         
-      - name: deploy
-        id: funny-deploy
-        uses: BoatNg/funny-deploy@master
-        env:
-          REMOTE_HOST: "${{ secrets.HOST }}"
-          REMOTE_USER: "${{ secrets.USERNAME }}"
-          REMOTE_PORT: "${{ secrets.PORT }}"
-          REMOTE_PASSWORD: "${{ secrets.PASSWORD }}"
-          REMOTE_PATH: "/home/pi/dev"
-          SOURCE: "/"
+#       - name: deploy
+#         id: funny-deploy
+#         uses: BoatNg/funny-deploy@master
+#         env:
+#           REMOTE_HOST: "${{ secrets.HOST }}"
+#           REMOTE_USER: "${{ secrets.USERNAME }}"
+#           REMOTE_PORT: "${{ secrets.PORT }}"
+#           REMOTE_PASSWORD: "${{ secrets.PASSWORD }}"
+#           REMOTE_PATH: "/home/pi/dev"
+#           SOURCE: "/"
+          
+          
+      - name: SFTP Deploy
+      # You may pin to the exact commit or the version.
+      # uses: wlixcc/SFTP-Deploy-Action@28d6168ebf0707d5c118b3bbdfb831b56046127c
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.1
+        with:
+          # username
+          username: "${{ secrets.USERNAME }}"
+          # your sftp server
+          server: "${{ secrets.HOST }}"
+          # your sftp server port, default to 22
+          port: "${{ secrets.PORT }}"
+          # you can copy private_key from your *.pem file, keep format
+          ssh_private_key: "${{ secrets.SSH_PRIVATE_KEY }}"
+          # will put all file under this path
+#           local_path: # default is ./*
+          # files will copy to under remote_path
+          remote_path: "/home/pi/dev"
+          # sftp args
+#           args: # optional
         
 #       - name: ssh deploy
 #         # You may pin to the exact commit or the version.
