@@ -55,7 +55,7 @@ jobs:
           # 
           localDir: "/"
           # 
-          remoteDir: "/home/pi/dev"
+          remoteDir: "/home/pi/dev/tbot"
           
           
 #       - name: SFTP Deploy
