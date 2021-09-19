@@ -63,7 +63,7 @@ jobs:
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSPHRASE }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           privateKey: ${{ secrets.SSH_PRIVATE_KEY}}
         env:
           CI: true
