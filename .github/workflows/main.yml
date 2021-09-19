@@ -40,9 +40,9 @@ jobs:
           username: ${{ secrets.USERNAME }} # FTP username
           password: ${{ secrets.PASSWORD }} # FTP password
           remote_folder: "/home/pi/dev/tbot" # optional, remote path of your FTP server
-          local_folder: '/' # optional, local path, default is: dist
+          local_folder: './' # optional, local path, default is: dist
           cleanup: false # optional, remove existing files inside FTP remote folder
-          include: "['src/**', 'package.json', 'tsconfig.json']"
+          include: '["src/**", "package.json", "tsconfig.json"]'
 #           exclude: [] # optional, e.g. ['node_modules/**', '.git/**', '*.env']
           pasive: true # optional
 
