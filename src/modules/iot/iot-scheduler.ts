@@ -2,34 +2,31 @@ import schedule from 'node-schedule'
 import UserDeviceScan from './user-device-scan'
 import Logger from '@modules/logger/logger'
 import TuyaDevice from './tuya-device'
+
 const logger = new Logger('iot-scheduler')
 
 export default class IoTScheduler {
     constructor(USER_DEVICES, tyuaDevices: { clipLight: TuyaDevice, ambientLight: TuyaDevice }) {
         const nokiaSevenPlus = USER_DEVICES[0];
-        const { clipLight, ambientLight } = tyuaDevices;
+        const {clipLight, ambientLight} = tyuaDevices;
 
-        schedule.scheduleJob('*/1 * * * *', lightOnByUserDevice);
-        schedule.scheduleJob({ hour: 1, minute: 0 }, lightOffBySchedule);
+        // Каждую минуту от 18:00 до 21:59
+        schedule.scheduleJob('*/1 18-21 * * *', ambientLightOnByUserDevice);
+        schedule.scheduleJob({hour: 8, minute: 45}, ambientLightOnByUserDevice);
+        schedule.scheduleJob({hour: 1, minute: 0}, allLightsOff);
 
-        function lightOnByUserDevice() {
-            const now = new Date().getHours();
-
+        // Включение AmbientLight если найден телефон
+        function ambientLightOnByUserDevice() {
             UserDeviceScan
                 .scanDevice(nokiaSevenPlus)
                 .then(isDeviceAvailable => {
-                    // Если телефон найден
-                    if (isDeviceAvailable) {
-                        /* От 19:00 до 21:59 и если свет выключен */
-                        if (now >= 18 && now <= 21 && ambientLight.status === false) {
-                            // Включить свет
-                            ambientLight.turnOn();
-                            logger.log({
-                                value: `⌛ Устройство «${ambientLight.name}» 🟡 включено по наличию телефона (от 18:00 до 21:59)`,
-                                type: 'info'
-                            });
-                        }
-                    }
+                    if (!isDeviceAvailable || ambientLight.status) return;
+                    ambientLight.turnOn().then(() =>
+                        logger.log({
+                            value: `⌛ Устройство «${ambientLight.name}» 🟡 включено по наличию телефона по расписанию`,
+                            type: 'info'
+                        })
+                    );
                 })
                 .catch(error =>
                     logger.log({
@@ -38,11 +35,12 @@ export default class IoTScheduler {
                     }));
         }
 
-        function lightOffBySchedule() {
+        // Выключение всего освещения
+        function allLightsOff() {
             clipLight.turnOff();
             ambientLight.turnOff();
             logger.log({
-                value: `⌛ Устройства «${ambientLight.name}» ⚫ и «${clipLight.name}» выключены по расписанию (01:00)`,
+                value: `⌛ Устройства «${ambientLight.name}» ⚫ и «${clipLight.name}» выключены по расписанию`,
                 type: 'info'
             });
         }
