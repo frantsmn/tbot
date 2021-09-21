@@ -12,7 +12,8 @@ export default class IoTScheduler {
 
         // Каждую минуту от 18:00 до 21:59
         schedule.scheduleJob('*/1 18-21 * * *', ambientLightOnByUserDevice);
-        schedule.scheduleJob({hour: 8, minute: 45}, ambientLightOnByUserDevice);
+        // Каждую минуту от 08:44 до 08:59 c понедельника по пятницу
+        schedule.scheduleJob('44-59/1 8 * * 1-5', ambientLightOnByUserDevice);
         schedule.scheduleJob({hour: 1, minute: 0}, allLightsOff);
 
         // Включение AmbientLight если найден телефон
@@ -37,12 +38,20 @@ export default class IoTScheduler {
 
         // Выключение всего освещения
         function allLightsOff() {
-            clipLight.turnOff();
-            ambientLight.turnOff();
-            logger.log({
-                value: `⌛ Устройства «${ambientLight.name}» ⚫ и «${clipLight.name}» выключены по расписанию`,
-                type: 'info'
-            });
+            Promise.all([
+                clipLight.turnOff(),
+                ambientLight.turnOff()
+            ]).then(() => {
+                logger.log({
+                    value: `⌛ Устройства «${ambientLight.name}» и «${clipLight.name}» выключены по расписанию`,
+                    type: 'info'
+                });
+            }).catch((error) => {
+                logger.log({
+                    value: `⌛ Ошибка при выключении устройств «${ambientLight.name}» и «${clipLight.name}» по расписанию. ${error}`,
+                    type: 'error'
+                });
+            })
         }
 
     }
