@@ -32,22 +32,3 @@ new Mts(BOT, FIREBASE)
 new IoT(TUYA_DEVICES, USER_DEVICES, BOT, ADMIN_ID)
 
 console.log('tbot 2.0')
-
-if (process.platform === "linux") {
-
-var noble = require('noble')
-noble.on('scanStart', () => console.log('scanStarted'));
-noble.on('stateChange', function (state) {
-    if (state === 'poweredOn') {
-        console.log('We can start scanning');
-    } else {
-        console.log('Stopped scanning');
-    }
-});
-
-setInterval(function () {
-    console.log(noble.state, ' (current state)');
-}, 2000);
-
-noble.on('discover', (peripheral) => console.log(peripheral));
-}
