@@ -10,11 +10,18 @@ export default class IoTScheduler {
         const nokiaSevenPlus = USER_DEVICES[0];
         const {clipLight, ambientLight} = tyuaDevices;
 
-        // Каждую минуту от 18:00 до 21:59
-        schedule.scheduleJob('*/1 18-21 * * *', ambientLightOnByUserDevice);
-        // Каждую минуту от 08:44 до 08:59 c понедельника по пятницу
-        schedule.scheduleJob('44-59/1 8 * * 1-5', ambientLightOnByUserDevice);
+        // Пытаться включить свет...
+
+        // каждую минуту от 17:00 до 21:59
+        schedule.scheduleJob('*/1 17-21 * * *', ambientLightOnByUserDevice);
+        // каждую минуту от 07:50 до 07:59 c понедельника по пятницу
+        schedule.scheduleJob('55-59/1 7 * * 1-5', ambientLightOnByUserDevice);
+        // каждую минуту от 08:00 до 08:05 c понедельника по пятницу
+        schedule.scheduleJob('0-5/1 8 * * 1-5', ambientLightOnByUserDevice);
+
+        // Выключать свет
         schedule.scheduleJob({hour: 1, minute: 0}, allLightsOff);
+        schedule.scheduleJob({hour: 9, minute: 0}, allLightsOff);
 
         // Включение AmbientLight если найден телефон
         function ambientLightOnByUserDevice() {

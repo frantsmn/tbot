@@ -9,7 +9,6 @@ interface EventMap {
 
 export default class TuyaDevice {
     id: string
-    key: string
     name: string
     #device: any
     #isConnected: boolean
@@ -48,7 +47,7 @@ export default class TuyaDevice {
         });
 
         this.#device.on('data', data => {
-            if (!data.dps) return
+            if (!data.dps || this.#status === data.dps['1']) return;
             this.#status = data.dps['1'];
             this.#eventMap.statusChange(this.status);
         });
