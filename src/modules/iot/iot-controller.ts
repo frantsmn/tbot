@@ -7,6 +7,7 @@ export default class iotController {
 
         BOT.onText(/подсветка/gi, async msg => {
             if (msg.chat.id !== ADMIN_ID) return;
+            // TODO в константы 'ambient'
             const {connected, status} = await iotInterface.toggle('ambient');
             ADMIN_KEYBOARD.setAmbientLightStatus(status);
             await BOT.sendMessage(ADMIN_ID, `Подсветка ${status ? 'включена' : 'выключена'}`,
@@ -20,6 +21,7 @@ export default class iotController {
 
         BOT.onText(/клипса/gi, async msg => {
             if (msg.chat.id !== ADMIN_ID) return;
+            // TODO в константы 'clip'
             const {connected, status} = await iotInterface.toggle('clip');
             ADMIN_KEYBOARD.setClipLightStatus(status);
             await BOT.sendMessage(ADMIN_ID, `Клипса ${status ? 'включена' : 'выключена'}`,
