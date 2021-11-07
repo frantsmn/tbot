@@ -1,56 +1,8 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Node 16",
   "compilerOptions": {
-    "lib": [
-      "es2021",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "module": "CommonJS",
-    "target": "es2021",
-    "importHelpers": true,
-    "noImplicitAny": false,
-    "strictNullChecks": false,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "sourceMap": false,
-    "baseUrl": "./src",
-    "paths": {
-      "@/*": [
-        "*"
-      ],
-      "@modules/*": [
-        "modules/*"
-      ],
-      "@keys/*": [
-        "keys/*"
-      ]
-    },
-    "strict": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "pretty": true,
-    // "declaration": true,
-    "outDir": "dist"
-    // "allowJs": true,
-    // "noEmit": false
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.json",
-    ".env"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "module": "commonjs",
+    "target": "es6",
+    "rootDir": "./",
+    "esModuleInterop": true
+  }
 }
