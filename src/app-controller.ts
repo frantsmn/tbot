@@ -1,13 +1,13 @@
 import TelegramBot from "node-telegram-bot-api";
 import { ADMIN_KEYBOARD, USER_KEYBOARD } from "./app-keyboards";
-import Logger from '@modules/logger/logger'
+import Logger from './modules/logger/logger'
 const logger = new Logger('app-controller')
 import AppFirebase from './app-firebase'
 
 export default class AppController {
 
   constructor(BOT: TelegramBot, FIREBASE: FirebaseFirestore.Firestore, ADMIN_ID: number) {
-    
+
     // Приветствие
     BOT.onText(/\/start/, msg => {
       switch (msg.chat.id) {
@@ -31,10 +31,6 @@ export default class AppController {
 
 *Баланс МТС*
 - Кнопка для просмотра остатка средств, минут и траффика
-- Ежедневная проверка и уведомление о пополнении, если необходимо
-
-*Баланс Beltelecom*
-- Кнопка для просмотра остатка
 - Ежедневная проверка и уведомление о пополнении, если необходимо`,
             {
               parse_mode: "Markdown",
@@ -45,7 +41,6 @@ export default class AppController {
       }
     });
 
-
     // Общие ответы
     BOT.onText(/пасиб|спс|благодар|cgc|cgfcb/gi, msg =>
       BOT.sendMessage(msg.chat.id, Math.random() > 0.5 ? "🐸❤️ Пожалуйста!" : "🐸❤️ Рада стараться!"));
@@ -53,14 +48,12 @@ export default class AppController {
     BOT.onText(/прив|ghbd|hello|hi/gi, msg =>
       BOT.sendMessage(msg.chat.id, Math.random() > 0.5 ? `🐸✋ Привет, ${msg.chat.first_name}!` : "🐸 Ааа... Кто здесь?!"));
 
-
     // Отправка сообщения через бота: @id Text...
     BOT.onText(/@([0-9]*)(.*)/, (msg, match) => {
       let id = match[1];
       let text = match[2];
       BOT.sendMessage(id, text);
     });
-
 
     // Трекинг пользователей
     const appFirebase = new AppFirebase(FIREBASE);
@@ -70,7 +63,7 @@ export default class AppController {
 
       // Проверка на нового пользователя
       let user = await appFirebase.getUserByUserId(msg.from.id);
-      if (!user?.hasOwnProperty("is_bot")) {
+      if (!user.hasOwnProperty("is_bot")) {
         appFirebase.setUser(msg.from);
         logger.log({
           value: `В базу добавлен пользователь\n\n${JSON.stringify(msg.from.first_name)}`,

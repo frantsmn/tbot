@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import Logger from '@modules/logger/logger'
+import Logger from '../../modules/logger/logger'
 import { URL, URLSearchParams } from 'url'
 const logger = new Logger('currency')
 

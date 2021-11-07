@@ -10,7 +10,7 @@
     "url": "https://github.com/frantsmn/tbot.git"
   },
   "scripts": {
-    "start": "nodemon dist/app.js",
+    "start": "nodemon src/app.ts",
     "build": "run-s build:ts build:al",
     "build:ts": "tsc --project tsconfig.json",
     "build:al": "tsc-alias --project tsconfig.json",
@@ -19,15 +19,15 @@
     "dev:al": "tsc-alias -w -f"
   },
   "dependencies": {
-    "arpscan": "^1.0.2",
     "dotenv": "^10.0.0",
     "firebase-admin": "^9.5.0",
     "node-color-log": "^5.3.1",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.5",
     "node-schedule": "^2.0.0",
     "node-telegram-bot-api": "^0.54.0",
     "nodemon": "^2.0.12",
     "puppeteer": "^10.2.0",
+    "ts-node": "^10.4.0",
     "tuyapi": "github:codetheweb/tuyapi"
   },
   "devDependencies": {
@@ -41,7 +41,6 @@
   "nodemonConfig": {
     "delay": 2000,
     "ignore": [
-      "./src",
       ".git",
       "node_modules/**/node_modules",
       "README"

@@ -1,37 +1,33 @@
-import TuyaDevice from "./tuya-device";
 import TelegramBot from "node-telegram-bot-api";
-import { ADMIN_KEYBOARD } from "@/app-keyboards";
+import {ADMIN_KEYBOARD} from "../../app-keyboards";
+import iotInterface from "./iot-interface";
 
-export default class IoTController {
-
-    constructor(BOT: TelegramBot, ADMIN_ID, tyuaDevices: { clipLight: TuyaDevice, ambientLight: TuyaDevice }) {
-        const { clipLight, ambientLight } = tyuaDevices;
+export default class iotController {
+    constructor(BOT: TelegramBot, ADMIN_ID) {
 
         BOT.onText(/подсветка/gi, async msg => {
             if (msg.chat.id !== ADMIN_ID) return;
-            ambientLight.toggle();
-            BOT.deleteMessage(msg.chat.id, msg.message_id.toString());
-        });
-        ambientLight.on('statusChange', status => {
+            const {connected, status} = await iotInterface.toggle('ambient');
             ADMIN_KEYBOARD.setAmbientLightStatus(status);
-            BOT.sendMessage(ADMIN_ID, `Устройство «${ambientLight.name}» ${status ? 'включено' : 'выключено'}`, {
-                reply_markup: ADMIN_KEYBOARD.keyboard,
-                disable_notification: true
-            });
+            await BOT.sendMessage(ADMIN_ID, `Подсветка ${status ? 'включена' : 'выключена'}`,
+                {
+                    reply_markup: ADMIN_KEYBOARD.keyboard,
+                    disable_notification: true,
+                }
+            );
+            await BOT.deleteMessage(msg.chat.id, msg.message_id.toString());
         });
 
         BOT.onText(/клипса/gi, async msg => {
             if (msg.chat.id !== ADMIN_ID) return;
-            clipLight.toggle();
-            BOT.deleteMessage(msg.chat.id, msg.message_id.toString());
-        })
-        clipLight.on('statusChange', status => {
+            const {connected, status} = await iotInterface.toggle('clip');
             ADMIN_KEYBOARD.setClipLightStatus(status);
-            BOT.sendMessage(ADMIN_ID, `Устройство «${clipLight.name}» ${status ? 'включено' : 'выключено'}`, {
-                reply_markup: ADMIN_KEYBOARD.keyboard,
-                disable_notification: true
-            });
+            await BOT.sendMessage(ADMIN_ID, `Клипса ${status ? 'включена' : 'выключена'}`,
+                {
+                    reply_markup: ADMIN_KEYBOARD.keyboard,
+                    disable_notification: true,
+                });
+            await BOT.deleteMessage(msg.chat.id, msg.message_id.toString());
         });
-
     }
 }

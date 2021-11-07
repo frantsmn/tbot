@@ -1,5 +1,5 @@
 import schedule from 'node-schedule'
-import Logger from '@modules/logger/logger'
+import Logger from '../../modules/logger/logger'
 const logger = new Logger('mts-scheduler')
 import MtsModel from './mts-model'
 

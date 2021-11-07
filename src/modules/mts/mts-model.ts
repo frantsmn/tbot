@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer'
-import Logger from '@modules/logger/logger'
+import Logger from '../../modules/logger/logger'
 const logger = new Logger('mts-model')
 
 // interface Account {

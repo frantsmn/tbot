@@ -1,4 +1,4 @@
-import Logger from '@modules/logger/logger'
+import Logger from './modules/logger/logger'
 const logger = new Logger('app-firebase')
 
 export default class AppFirebase {
