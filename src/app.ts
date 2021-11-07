@@ -5,11 +5,9 @@ import TelegramBot from 'node-telegram-bot-api'
 const ENV_PATH = path.resolve(require('os').homedir(), '.tbot/.env')
 const KEYS_PATH = path.resolve(require('os').homedir(), '.tbot/keys/')
 const FIREBASE_ACCOUNT_PATH = path.join(KEYS_PATH, 'firebase-adminsdk.json')
-const TUYA_DEVICES_PATH = path.join(KEYS_PATH, 'tuya-devices.json')
 const USER_DEVICES_PATH = path.join(KEYS_PATH, 'user-devices.json')
 
 const FIREBASE_ACCOUNT = require(FIREBASE_ACCOUNT_PATH)
-const TUYA_DEVICES = require(TUYA_DEVICES_PATH)
 const USER_DEVICES = require(USER_DEVICES_PATH)
 
 import firebase from './connect-firebase'
