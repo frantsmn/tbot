@@ -17,27 +17,27 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-
-      - name: Upload files
-        uses: sand4rt/ftp-deployer@v1.3
-        with:
-          sftp: true # optional
-          host: ${{ secrets.HOST }} # e.g. ftp.host.com or sftp.host.com (without ftp:// or ftps://)
-          port: ${{ secrets.PORT }} # optional, default is: 21
-          username: ${{ secrets.USERNAME }} # FTP username
-          password: ${{ secrets.PASSWORD }} # FTP password
-          remote_folder: "/home/pi/dev/tbot" # optional, remote path of your FTP server
-          local_folder: './' # optional, local path, default is: dist
-          cleanup: false # optional, remove existing files inside FTP remote folder
-          include: '["src/**", "package.json", "tsconfig.json"]'
-          #exclude: [] # optional, e.g. ['node_modules/**', '.git/**', '*.env']
-          pasive: true # optional
+#      - uses: actions/checkout@v2
+#
+#      - name: Upload files
+#        uses: sand4rt/ftp-deployer@v1.3
+#        with:
+#          sftp: true # optional
+#          host: ${{ secrets.HOST }} # e.g. ftp.host.com or sftp.host.com (without ftp:// or ftps://)
+#          port: ${{ secrets.PORT }} # optional, default is: 21
+#          username: ${{ secrets.USERNAME }} # FTP username
+#          password: ${{ secrets.PASSWORD }} # FTP password
+#          remote_folder: "/home/pi/dev/tbot" # optional, remote path of your FTP server
+#          local_folder: './' # optional, local path, default is: dist
+#          cleanup: false # optional, remove existing files inside FTP remote folder
+#          include: '["src/**", "package.json", "tsconfig.json"]'
+#          #exclude: [] # optional, e.g. ['node_modules/**', '.git/**', '*.env']
+#          pasive: true # optional
 
       - name: Install dependencies & build
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: cd ~/dev/tbot && npm i && npm run build
+          command: cd ~/dev/tbot && git pull && npm i
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USERNAME }}
