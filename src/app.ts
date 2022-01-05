@@ -12,7 +12,6 @@ import AppController from './app-controller'
 
 import Mts from "./modules/mts/index"
 import Currency from './modules/currency/index'
-import IoT from './modules/iot/index'
 
 dotenv.config({path: ENV_PATH})
 
@@ -22,9 +21,7 @@ const BOT = new TelegramBot(process.env.BOT_TOKEN, {polling: true})
 
 new AppController(BOT, FIREBASE, ADMIN_ID)
 
-// Modules
 new Currency(BOT)
 new Mts(BOT, FIREBASE)
-new IoT(BOT, ADMIN_ID)
 
-console.log('tbot 2.1')
+console.log('tbot 2.2')
