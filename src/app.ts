@@ -22,6 +22,6 @@ const BOT = new TelegramBot(process.env.BOT_TOKEN, {polling: true})
 new AppController(BOT, FIREBASE, ADMIN_ID)
 
 new Currency(BOT)
-new Mts(BOT, FIREBASE)
+new Mts(BOT, FIREBASE, ADMIN_ID)
 
 console.log('tbot 2.2')

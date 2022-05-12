@@ -7,8 +7,8 @@ type AbbrRaw = '$' | 'USD' | '€' | 'EUR' | '₽' | 'RUB'
 
 export default class CurrencyModel {
 
-    private static ERROR_MESSAGE: string = 'Произошла ошибка!\nПопробуйте позже или перейдите на сайт:\nhttps://myfin.by/currency/minsk'
-    private static API_URL: string = 'http://www.nbrb.by/API/ExRates/Rates'
+    private static ERROR_MESSAGE: string = 'Произошла ошибка!\nПопробуйте позже или перейдите на сайт:\nhttps://myfin.by/currency/minsk\nТам тоже есть калькулятор валют'
+    private static API_URL: string = 'https://www.nbrb.by/API/ExRates/Rates'
     private static PARAMS: URLSearchParams = new URLSearchParams({ Periodicity: '0' })
     private static ABBR_ARRAY: Array<string> = ['USD', 'EUR', 'RUB']
 
@@ -45,7 +45,7 @@ export default class CurrencyModel {
         if (!rates.length) return this.ERROR_MESSAGE
 
         const abbreviationMap = { '$': 'USD', '€': 'EUR', '₽': 'RUB' }
-        const abbreviation = abbreviationMap.hasOwnProperty(abbreviationRaw) ? abbreviationMap[abbreviationRaw] : abbreviationRaw && abbreviationRaw.toUpperCase()
+        const abbreviation = abbreviationMap.hasOwnProperty(abbreviationRaw) ? abbreviationMap[abbreviationRaw] : abbreviationRaw?.toUpperCase()
 
         const convertToBYN = (rate, value): string =>
             `\`${value} ${rate['Cur_Abbreviation']} \` : \` ${Math.round(value * rate['Cur_OfficialRate'] / rate['Cur_Scale'] * 1000) / 1000} BYN\``

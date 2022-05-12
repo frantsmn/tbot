@@ -181,7 +181,7 @@ export default class MtsModel {
                         type: 'info',
                     })
                 } else {
-                    account.needUpdate = true
+                    // account.needUpdate = true
 
                     logger.log({
                         value: `Не удалось получить данные для аккаунта [${account.login}]`,

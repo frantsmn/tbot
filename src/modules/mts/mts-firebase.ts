@@ -1,49 +1,54 @@
 import Logger from '../../modules/logger/logger'
-const logger = new Logger('mts-firebase')
 
 export default class MtsFirebase {
     FIREBASE: FirebaseFirestore.Firestore
+    BOT: any | null;
+    ADMIN_ID: number | null
+    logger: Logger
 
-    constructor(FIREBASE: FirebaseFirestore.Firestore) {
+    constructor(FIREBASE: FirebaseFirestore.Firestore, BOT?: any, ADMIN_ID?: number) {
         this.FIREBASE = FIREBASE;
+        this.BOT = BOT || null;
+        this.ADMIN_ID = ADMIN_ID || null;
+        this.logger = new Logger('mts-firebase', BOT, ADMIN_ID);
     }
 
     async getMtsAccountsByUserId(userId) {
-        logger.log({
+        this.logger.log({
             value: `Получение аккаунтов для ${userId} из firebase`,
             type: 'info',
         })
-        const collection = await this.FIREBASE.collection('mts').where('users', 'array-contains', userId).get()
-        return collection.docs.map(account => account.data())
+        const collection = await this.FIREBASE.collection('mts').where('users', 'array-contains', userId).get();
+        return collection.docs.map(account => account.data());
     }
 
     async getAllMtsAccounts() {
-        logger.log({
+        this.logger.log({
             value: `Получение всех аккаунтов из firebase`,
             type: 'info',
-        })
-        const collection = await this.FIREBASE.collection('mts').get()
-        return collection.docs.map(account => account.data())
+        });
+        const collection = await this.FIREBASE.collection('mts').get();
+        return collection.docs.map(account => account.data());
     }
 
-    async getUrgentMtsAccounts() {
-        logger.log({
-            value: `Получение всех аккаунтов ожидающих обновления из firebase`,
-            type: 'info',
-        })
-        const collection = await this.FIREBASE.collection('mts').get()
-        return collection.docs
-            .map(account => account.data())
-            .filter(account => account.needUpdate)
-    }
+    // async getUrgentMtsAccounts() {
+    //     this.logger.log({
+    //         value: `Получение всех аккаунтов ожидающих обновления из firebase`,
+    //         type: 'info',
+    //     });
+    //     const collection = await this.FIREBASE.collection('mts').get();
+    //     return collection.docs
+    //         .map(account => account.data())
+    //         .filter(account => account.needUpdate);
+    // }
 
     async setMtsAccounts(accounts) {
         for (const account of accounts) {
-            logger.log({
+            this.logger.log({
                 value: `Сохранение аккаунта ${account.login} в firebase`,
                 type: 'info',
-            })
-            await this.FIREBASE.doc(`mts/${account.login}`).set(account)
+            });
+            await this.FIREBASE.doc(`mts/${account.login}`).set(account);
         }
     }
 }

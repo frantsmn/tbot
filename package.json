@@ -16,7 +16,7 @@
     "build:al": "tsc-alias --project tsconfig.json",
     "dev": "run-p dev:ts dev:al start",
     "dev:ts": "tsc -w",
-    "dev:al": "tsc-alias -w -f"
+    "dev:al": "tsc-alias -w"
   },
   "dependencies": {
     "dotenv": "^10.0.0",

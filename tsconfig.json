@@ -1,8 +1,19 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
     "module": "commonjs",
     "target": "es6",
     "rootDir": "./",
-    "esModuleInterop": true
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "tsc-alias": {
+    "verbose": false,
+    "resolveFullPaths": true,
   }
 }

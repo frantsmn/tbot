@@ -26,17 +26,13 @@ interface LogObject extends LogOptions {
 
 export default class Logger {
     tag: string;
-    constructor(tag: string) {
-        this.tag = tag;
-    }
+    BOT: any | null;
+    ADMIN_ID: number | null
 
-    private getLocalDateTime(): LocalDateTime {
-        const rawDate = new Date()
-        return {
-            date: rawDate.toLocaleDateString('ru'),
-            time: rawDate.toLocaleTimeString('ru'),
-            timestamp: Date.now()
-        }
+    constructor(tag: string, BOT?: any, ADMIN_ID?: number) {
+        this.tag = tag;
+        this.BOT = BOT || null;
+        this.ADMIN_ID = ADMIN_ID || null;
     }
 
     log(options: LogOptions): void {
@@ -48,10 +44,24 @@ export default class Logger {
             tag: this.tag,
             localDateTime: this.getLocalDateTime(),
         }
-        this.logToConsole(logObject)
-        
-        this.logToStore(logObject)
-        this.logToAdmin(logObject)
+        this.logToConsole(logObject);
+
+        if (!this.BOT && !this.ADMIN_ID) {
+            return;
+        }
+
+        this.logToAdmin(logObject);
+        // this.logToStore(logObject);
+    }
+
+    private getLocalDateTime(): LocalDateTime {
+        const rawDate = new Date();
+
+        return {
+            date: rawDate.toLocaleDateString('ru'),
+            time: rawDate.toLocaleTimeString('ru'),
+            timestamp: Date.now()
+        }
     }
 
     private logToConsole(logObject: LogObject): void {
@@ -69,7 +79,10 @@ export default class Logger {
         // console.log('[logger] > //TODO: Log to store', logObject);
     }
 
-    private logToAdmin(logObject: LogObject): void {
-        // console.log('[logger] > //TODO: Log to Admin', logObject);
+    private async logToAdmin(logObject: LogObject): Promise<void> {
+        const {type, tag, isAlertAdmin, value} = logObject;
+        if (isAlertAdmin) {
+            await this.BOT.sendMessage(this.ADMIN_ID, `‼ [${type}] [${tag}] ${value}`);
+        }
     }
 }

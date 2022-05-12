@@ -1,4 +1,4 @@
-import { ReplyKeyboardMarkup } from "node-telegram-bot-api";
+import type { ReplyKeyboardMarkup } from "node-telegram-bot-api";
 
 export const USER_KEYBOARD: ReplyKeyboardMarkup = {
     keyboard: [[{ text: "Курсы валют" }], [{ text: "Баланс MTS" }]],
