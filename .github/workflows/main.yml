@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies & build
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: cd ~/dev/tbot && git pull && npm i
+          command: cd ~/dev/tbot && git reset --hard HEAD && git pull && npm i
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USERNAME }}
