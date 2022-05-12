@@ -25,7 +25,7 @@ interface AccountStatusObject {
 export default class MtsModel {
 
     private static MIN_UPDATE_INTERVAL = 600000
-    private static MIN_BALANCE = 1.5
+    private static MIN_BALANCE = 0.9
 
     private static async openBrowser() {
         try {
