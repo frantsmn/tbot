@@ -5,10 +5,9 @@ import MtsModel from './mts-model'
 export default class MtsScheduler {
     BOT: any
     MTS_FIREBASE: any
-    logger: Logger
 
     constructor(BOT, MTS_FIREBASE, ADMIN_ID) {
-        this.logger = new Logger('mts-scheduler', BOT, ADMIN_ID);
+        const logger = new Logger('mts-scheduler', BOT, ADMIN_ID);
 
         schedule.scheduleJob({hour: 5, minute: 10}, updateAccounts);
         schedule.scheduleJob({hour: 13, minute: 0}, updateAccounts);
@@ -40,7 +39,7 @@ export default class MtsScheduler {
         // }
 
         async function updateAccounts() {
-            this.logger.log({
+            logger.log({
                 value: `⌛ Обновление аккаунтов...`,
                 type: 'info',
             });
@@ -50,21 +49,21 @@ export default class MtsScheduler {
                 await MtsModel.updateAccounts(userAccounts);
                 await MTS_FIREBASE.setMtsAccounts(userAccounts);
             } catch (error) {
-                this.logger.log({
+                logger.log({
                     value: `Ошибка при обновлении аккаунтов\n${error}`,
                     type: 'error',
                     isAlertAdmin: true,
                 });
             }
 
-            this.logger.log({
+            logger.log({
                 value: `⌛ Обновление аккаунтов завершено!`,
                 type: 'info',
             });
         }
 
         async function balanceReminders() {
-            this.logger.log({
+            logger.log({
                 value: `⌛ Рассылка напоминаний о пополнении баланса...`,
                 type: 'info',
             });
@@ -79,14 +78,14 @@ export default class MtsScheduler {
                         })
                 });
             } catch (error) {
-                this.logger.log({
+                logger.log({
                     value: `Ошибка при рассылке напоминаний о пополнении баланса\n${error}`,
                     type: 'error',
                     isAlertAdmin: true,
                 });
             }
 
-            this.logger.log({
+            logger.log({
                 value: `⌛ Рассылка напоминаний о пополнении баланса завершена!`,
                 type: 'info',
             });
