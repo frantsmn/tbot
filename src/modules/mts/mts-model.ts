@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer'
 import Logger from '../../modules/logger/logger'
+
 const logger = new Logger('mts-model')
 
 // interface Account {
@@ -9,7 +10,6 @@ const logger = new Logger('mts-model')
 //     minutes: string
 //     traffic: string
 //     spent: string
-//     needUpdate: boolean
 //     timestamp: number
 //     isLowBalance: boolean
 //     users: Array<number>
@@ -30,9 +30,12 @@ export default class MtsModel {
     private static async openBrowser() {
         try {
             if (process.platform === "linux")
-                return await puppeteer.launch({ executablePath: '/usr/bin/chromium-browser', args: ['--no-sandbox', '--disable-setuid-sandbox'] })
+                return await puppeteer.launch({
+                    executablePath: '/usr/bin/chromium-browser',
+                    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                })
             else
-                return await puppeteer.launch({ headless: true })
+                return await puppeteer.launch({headless: true})
 
         } catch (error) {
             logger.log({
@@ -55,7 +58,7 @@ export default class MtsModel {
                 type: 'info',
             })
             try {
-                await page.goto('https://ihelper.mts.by/SelfCarePda/Security.mvc/LogOn', { waitUntil: 'domcontentloaded' })
+                await page.goto('https://ihelper.mts.by/SelfCarePda/Security.mvc/LogOn', {waitUntil: 'domcontentloaded'})
             } catch (error) {
                 throw `Не удалось открыть страницу входа\n${error}`
             }
@@ -112,7 +115,7 @@ export default class MtsModel {
                 type: 'info',
             })
             try {
-                await page.goto('https://ihelper.mts.by/SelfCarePda/Account.mvc/Status', { waitUntil: 'domcontentloaded' })
+                await page.goto('https://ihelper.mts.by/SelfCarePda/Account.mvc/Status', {waitUntil: 'domcontentloaded'})
             } catch (error) {
                 throw `Не удалось открыть страницу статуса\n${error}`
             }
@@ -128,12 +131,11 @@ export default class MtsModel {
                 const mainContainer = document.querySelector(".main") as HTMLElement
                 if (mainContainer instanceof HTMLElement) {
                     return mainContainer.innerText
-                }
-                else throw `Не найден элемент с информацией о балансе`
+                } else throw `Не найден элемент с информацией о балансе`
             })
 
         } catch (error) {
-            logger.log({ value: error, type: 'error' })
+            logger.log({value: error, type: 'error'})
         }
 
         await page.close()
@@ -151,7 +153,7 @@ export default class MtsModel {
         const minutes = text.match(regExMinutes) ? text.match(regExMinutes)[1] : undefined
         const spent = text.match(regExSpent) ? text.match(regExSpent)[1] : undefined
 
-        return { balance, traffic, minutes, spent }
+        return {balance, traffic, minutes, spent}
     }
 
     static async updateAccounts(array: FirebaseFirestore.DocumentData[]): Promise<Array<FirebaseFirestore.DocumentData>> {
@@ -171,7 +173,6 @@ export default class MtsModel {
 
                 if (accountStatusObject.balance) {
                     account = Object.assign(account, accountStatusObject, {
-                        needUpdate: false,
                         timestamp: Date.now(),
                         isLowBalance: accountStatusObject.balance !== undefined && parseFloat(accountStatusObject.balance) < this.MIN_BALANCE
                     })
@@ -181,8 +182,6 @@ export default class MtsModel {
                         type: 'info',
                     })
                 } else {
-                    // account.needUpdate = true
-
                     logger.log({
                         value: `Не удалось получить данные для аккаунта [${account.login}]`,
                         type: 'warn',
@@ -202,7 +201,7 @@ export default class MtsModel {
     }
 
     static createMessage(account: FirebaseFirestore.DocumentData) {
-        const { login, balance, traffic, minutes, spent, timestamp } = account
+        const {login, balance, traffic, minutes, spent, timestamp} = account
         const date = new Date(timestamp).toLocaleDateString()
         const time = new Date(timestamp).toLocaleTimeString()
         const isLowBalance = parseFloat(balance) <= this.MIN_BALANCE;
@@ -223,19 +222,12 @@ export default class MtsModel {
                 inline_keyboard: [
                     [{
                         text: "Узнать баланс на данный момент",
-                        callback_data: JSON.stringify({ query_id: "mts" })
+                        callback_data: JSON.stringify({query_id: "mts"})
                     }]
                 ]
             })
-        } : { parse_mode: "Markdown" }
+        } : {parse_mode: "Markdown"}
 
-        return { text, options }
+        return {text, options}
     }
-    // static async getLowBalanceMessagesFromFirestore() {
-    //     const userAccounts = await MtsFirebase.getAllMtsAccounts()
-    //     const messages = userAccounts.reduce((messages, account) =>
-    //         account.users.forEach(user => messages.push(this.createMessage(user, account))
-    //         ), [])
-    //     return messages.filter(message => message.warning)
-    // }
 }

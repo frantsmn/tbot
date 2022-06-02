@@ -31,17 +31,6 @@ export default class MtsFirebase {
         return collection.docs.map(account => account.data());
     }
 
-    // async getUrgentMtsAccounts() {
-    //     this.logger.log({
-    //         value: `Получение всех аккаунтов ожидающих обновления из firebase`,
-    //         type: 'info',
-    //     });
-    //     const collection = await this.FIREBASE.collection('mts').get();
-    //     return collection.docs
-    //         .map(account => account.data())
-    //         .filter(account => account.needUpdate);
-    // }
-
     async setMtsAccounts(accounts) {
         for (const account of accounts) {
             this.logger.log({
