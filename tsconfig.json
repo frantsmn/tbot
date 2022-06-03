@@ -3,7 +3,7 @@
     "baseUrl": "./src",
     "module": "commonjs",
     "target": "es6",
-    "rootDir": "./",
+    "rootDir": "./src",
     "outDir": "./dist",
     "esModuleInterop": true,
     "paths": {
@@ -14,6 +14,6 @@
   },
   "tsc-alias": {
     "verbose": false,
-    "resolveFullPaths": true,
+    "resolveFullPaths": true
   }
 }

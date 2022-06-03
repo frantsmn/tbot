@@ -24,4 +24,4 @@ new AppController(BOT, FIREBASE, ADMIN_ID)
 new Currency(BOT)
 new Mts(BOT, FIREBASE, ADMIN_ID)
 
-console.log('tbot 2.3')
+console.log('tbot started')
