@@ -20,10 +20,10 @@ export default class CurrencyNB {
             await context.update();
         })(this);
 
-        schedule.scheduleJob({hour: 0, minute: 5}, this.update);
-        schedule.scheduleJob({hour: 6, minute: 5}, this.update);
-        schedule.scheduleJob({hour: 12, minute: 5}, this.update);
-        schedule.scheduleJob({hour: 18, minute: 5}, this.update);
+        schedule.scheduleJob({hour: 0, minute: 5}, async () => await this.update());
+        schedule.scheduleJob({hour: 6, minute: 5}, async () => await this.update());
+        schedule.scheduleJob({hour: 12, minute: 5}, async () => await this.update());
+        schedule.scheduleJob({hour: 18, minute: 5}, async () => await this.update());
     }
 
     async request(): Promise<Array<object>> {
