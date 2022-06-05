@@ -3,10 +3,10 @@ import MtsController from './mts-controller';
 import MtsScheduler from './mts-scheduler';
 
 export default class Mts {
-    constructor(BOT, FIREBASE, ADMIN_ID) {
-        const MTS_FIREBASE = new MtsFirebase(FIREBASE, BOT, ADMIN_ID);
+    constructor(BOT, FIREBASE, loggerFactory) {
+        const MTS_FIREBASE = new MtsFirebase(FIREBASE, loggerFactory);
 
-        new MtsController(BOT, MTS_FIREBASE, ADMIN_ID);
-        new MtsScheduler(BOT, MTS_FIREBASE, ADMIN_ID);
+        new MtsController(BOT, MTS_FIREBASE, loggerFactory);
+        new MtsScheduler(BOT, MTS_FIREBASE, loggerFactory);
     }
 }

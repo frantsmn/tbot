@@ -3,10 +3,12 @@ import Transport from 'winston-transport';
 export default class TelegramBotTransport extends Transport {
     bot: any;
     adminId: string;
+    loggerName: string;
 
     constructor(opts) {
         super(opts);
 
+        this.loggerName = opts.loggerName ?? '';
         this.bot = opts.bot;
         this.adminId = opts.adminId;
     }
@@ -15,7 +17,7 @@ export default class TelegramBotTransport extends Transport {
         const {
             timestamp = '',
             service = '',
-            label = '',
+            label = this.loggerName,
             level = '',
             message = '',
             isTg = false,
@@ -42,6 +44,7 @@ export default class TelegramBotTransport extends Transport {
 
         await this.bot.sendMessage(this.adminId, botMessage, {
             disable_notification: disableNotification,
+            parse_mode: 'Markdown',
         });
 
         callback();

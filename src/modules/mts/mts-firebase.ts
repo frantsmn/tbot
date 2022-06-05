@@ -1,43 +1,43 @@
-import Logger from '../logger/logger'
+import type winston from 'winston';
+import type LoggerFactory from '../../LoggerFactory/LoggerFactory';
 
 export default class MtsFirebase {
-    FIREBASE: FirebaseFirestore.Firestore
-    BOT: any | null;
-    ADMIN_ID: number | null
-    logger: Logger
+    FIREBASE: FirebaseFirestore.Firestore;
+    private logger: winston.Logger;
 
-    constructor(FIREBASE: FirebaseFirestore.Firestore, BOT?: any, ADMIN_ID?: number) {
+    constructor(FIREBASE: FirebaseFirestore.Firestore, loggerFactory: LoggerFactory) {
         this.FIREBASE = FIREBASE;
-        this.BOT = BOT || null;
-        this.ADMIN_ID = ADMIN_ID || null;
-        this.logger = new Logger('mts-firebase', BOT, ADMIN_ID);
+        this.logger = loggerFactory.createLogger('MtsFirebase');
     }
 
     async getMtsAccountsByUserId(userId) {
-        this.logger.log({
-            value: `Получение аккаунтов для ${userId} из firebase`,
-            type: 'info',
-        })
         const collection = await this.FIREBASE.collection('mts').where('users', 'array-contains', userId).get();
-        return collection.docs.map(account => account.data());
+
+        this.logger.info({
+            message: `Получение аккаунтов для ${userId} из firebase`,
+        });
+
+        return collection.docs.map((account) => account.data());
     }
 
     async getAllMtsAccounts() {
-        this.logger.log({
-            value: `Получение всех аккаунтов из firebase`,
-            type: 'info',
-        });
         const collection = await this.FIREBASE.collection('mts').get();
-        return collection.docs.map(account => account.data());
+
+        this.logger.info({
+            message: 'Получение всех аккаунтов из firebase',
+        });
+
+        return collection.docs.map((account) => account.data());
     }
 
     async setMtsAccounts(accounts) {
-        for (const account of accounts) {
-            this.logger.log({
-                value: `Сохранение аккаунта ${account.login} в firebase`,
-                type: 'info',
-            });
+        // eslint-disable-next-line no-restricted-syntax
+        for await (const account of accounts) {
             await this.FIREBASE.doc(`mts/${account.login}`).set(account);
+
+            this.logger.info({
+                message: `Сохранение аккаунта [${account.login}] в firebase`,
+            });
         }
     }
 }

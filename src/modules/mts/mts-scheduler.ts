@@ -1,40 +1,34 @@
 import schedule from 'node-schedule';
-import Logger from '../logger/logger';
 import MtsModel from './mts-model';
 
 export default class MtsScheduler {
-    constructor(BOT, MTS_FIREBASE, ADMIN_ID) {
-        const logger = new Logger('mts-scheduler', BOT, ADMIN_ID);
+    constructor(BOT, MTS_FIREBASE, loggerFactory) {
+        const logger = loggerFactory.createLogger('MtsScheduler');
 
         async function updateAccounts() {
             try {
-                logger.log({
-                    value: '⌛ Обновление аккаунтов...',
-                    type: 'info',
+                logger.info({
+                    message: 'Обновление аккаунтов...',
                 });
 
                 const userAccounts = await MTS_FIREBASE.getAllMtsAccounts();
                 await MtsModel.updateAccounts(userAccounts);
                 await MTS_FIREBASE.setMtsAccounts(userAccounts);
             } catch (error) {
-                logger.log({
-                    value: `Ошибка при обновлении аккаунтов\n${error}`,
-                    type: 'error',
-                    isAlertAdmin: true,
+                logger.error({
+                    message: `Ошибка при обновлении аккаунтов\n${error}`,
                 });
             } finally {
-                logger.log({
-                    value: '⌛ Обновление аккаунтов завершено!',
-                    type: 'info',
+                logger.info({
+                    message: 'Обновление аккаунтов завершено!',
                 });
             }
         }
 
         async function balanceReminders() {
             try {
-                logger.log({
-                    value: '⌛ Рассылка напоминаний о пополнении баланса...',
-                    type: 'info',
+                logger.info({
+                    message: 'Рассылка напоминаний о пополнении баланса...',
                 });
 
                 const userAccounts = await MTS_FIREBASE.getAllMtsAccounts();
@@ -47,15 +41,12 @@ export default class MtsScheduler {
                     }
                 });
             } catch (error) {
-                logger.log({
-                    value: `Ошибка при рассылке напоминаний о пополнении баланса\n${error}`,
-                    type: 'error',
-                    isAlertAdmin: true,
+                logger.error({
+                    message: `Ошибка при рассылке напоминаний о пополнении баланса\n${error}`,
                 });
             } finally {
-                logger.log({
-                    value: '⌛ Рассылка напоминаний о пополнении баланса завершена!',
-                    type: 'info',
+                logger.info({
+                    message: 'Рассылка напоминаний о пополнении баланса завершена!',
                 });
             }
         }

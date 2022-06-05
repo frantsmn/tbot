@@ -1,10 +1,11 @@
 import TelegramBot from 'node-telegram-bot-api';
-import Logger from './modules/logger/logger';
 import {ADMIN_KEYBOARD, USER_KEYBOARD} from './app-keyboards';
+import type LoggerFactory from './LoggerFactory/LoggerFactory';
 
-const logger = new Logger('app-controller');
-
-const startMessage = `🐸 Привет!
+export default class AppController {
+    constructor(BOT: TelegramBot, ADMIN_ID: number, loggerFactory: LoggerFactory) {
+        const logger = loggerFactory.createLogger('AppController');
+        const startMessage = `🐸 Привет!
 
 Вот что я умею:
 
@@ -16,8 +17,6 @@ const startMessage = `🐸 Привет!
 - Кнопка для просмотра остатка средств, минут и траффика
 - Ежедневная проверка и уведомление о пополнении, если необходимо`;
 
-export default class AppController {
-    constructor(BOT: TelegramBot, FIREBASE: FirebaseFirestore.Firestore, ADMIN_ID: number) {
         // Приветствие
         BOT.onText(/\/start/, async (msg) => {
             if (msg.chat.id === ADMIN_ID) {
@@ -46,11 +45,13 @@ export default class AppController {
 
         // Логгирование сообщений пользователей
         BOT.on('message', async (msg) => {
-            if (msg.from.id === ADMIN_ID) return;
+            if (msg.from.id === ADMIN_ID) {
+                return;
+            }
 
-            logger.log({
-                value: `Пользователь ${msg.from.first_name} ${msg.chat.id} оставил сообщение: ${msg.text}`,
-                type: 'info',
+            logger.info({
+                message: `Пользователь ${msg.from.first_name} \`${msg.chat.id}\` оставил сообщение`,
+                isTg: true,
             });
 
             await BOT.forwardMessage(ADMIN_ID, msg.from.id, msg.message_id);

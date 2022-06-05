@@ -5,7 +5,6 @@ import TelegramBotTransport from './TelegramBotTransport';
 export default class LoggerFactory {
     private readonly bot: any;
     private readonly adminId: any;
-    readonly #logger: winston.Logger;
     private readonly createConsoleFormat: (loggerName) => any;
 
     constructor({bot, adminId}) {
@@ -19,7 +18,7 @@ export default class LoggerFactory {
             printf,
             errors,
             colorize,
-            json,
+            // json,
         } = format;
         const timeFormat = timestamp({format: 'DD.MM.YY HH:mm:ss'});
         const logFormat = printf(({
@@ -45,7 +44,7 @@ export default class LoggerFactory {
         };
     }
 
-    createLogger(loggerName?: string) {
+    createLogger(loggerName?: string): winston.Logger {
         return createLogger({
             level: 'silly',
             transports: [
@@ -53,6 +52,7 @@ export default class LoggerFactory {
                     format: this.createConsoleFormat(loggerName),
                 }),
                 new TelegramBotTransport({
+                    loggerName,
                     bot: this.bot,
                     adminId: this.adminId,
                 }),
