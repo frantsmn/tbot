@@ -15,7 +15,7 @@ export default class TelegramBotTransport extends Transport {
 
     async log(info, callback) {
         const {
-            timestamp = '',
+            eventTimestamp = '',
             service = '',
             label = this.loggerName,
             level = '',
@@ -36,9 +36,9 @@ export default class TelegramBotTransport extends Transport {
             error: '🔥',
         };
         const disableNotification = isTgSilent && level !== 'error';
-        const messageTimestamp = timestamp ? `${new Date(timestamp).toLocaleTimeString()}\n` : '';
-        const messageService = service ? `[${service}]` : '';
-        const messageLabel = label ? `[${label}]\n` : '';
+        const messageTimestamp = eventTimestamp ? `${new Date(eventTimestamp).toLocaleTimeString()}\n` : '';
+        const messageService = service ? `[[${service}]] > ` : '';
+        const messageLabel = label ? `[[${label}]]\n` : '';
         const messageLevel = levelIconMap[level] ? `${levelIconMap[level]} ` : `(${level}) `;
         const botMessage = `${messageLevel}${messageTimestamp}${messageService}${messageLabel}${message}`;
 

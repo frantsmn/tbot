@@ -8,9 +8,6 @@ export default class LoggerFactory {
     private readonly createConsoleFormat: (loggerName) => any;
 
     constructor({bot, adminId}) {
-        this.bot = bot;
-        this.adminId = adminId;
-
         const {
             combine,
             timestamp,
@@ -20,22 +17,41 @@ export default class LoggerFactory {
             colorize,
             // json,
         } = format;
-        const timeFormat = timestamp({format: 'DD.MM.YY HH:mm:ss'});
-        const logFormat = printf(({
-            level,
-            message,
-            label,
-            timestamp,
-        }) => `${timestamp} [${label}] ${level}: ${message}`);
+
+        this.bot = bot;
+        this.adminId = adminId;
 
         this.createConsoleFormat = (loggerName?: string) => combine(
             colorize(),
             errors({stack: true}),
-            timeFormat,
-            logFormat,
+            timestamp({format: 'DD.MM.YY HH:mm:ss'}),
+            printf(({
+                level,
+                message,
+                timestamp,
+                /**
+                 * Кастомное опциональное поле фактического времени события
+                 * Если приходит пустое, то будет показан 'timestamp'
+                 */
+                eventTimestamp,
+                /**
+                 * Кастомное опциональное поле названия сервиса
+                 * Если приходит пустое, то не будет показано
+                 */
+                service,
+                /**
+                 * Кастомное опциональное поле названия модуля
+                 * Если приходит пустое, то будет показан 'loggerName'
+                 */
+                label,
+            }) => {
+                const time = eventTimestamp ? `(${new Date(eventTimestamp).toLocaleDateString()} ${new Date(eventTimestamp).toLocaleTimeString()})` : timestamp;
+                const messageService = service ? ` [${service}] >` : '';
+
+                return `${time}${messageService} [${label ?? loggerName ?? '...'}] ${level}: ${message}`;
+            }),
             label({
                 label: loggerName ?? '',
-                message: Boolean(loggerName),
             }),
         );
     }
