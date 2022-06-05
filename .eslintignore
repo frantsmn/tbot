@@ -1,0 +1,5 @@
+node_modules
+dist
+.github
+.eslintrc.js
+ecosystem.config.js
