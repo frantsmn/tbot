@@ -28,20 +28,16 @@ export default class LoggerFactory {
             timestamp,
         }) => `${timestamp} [${label}] ${level}: ${message}`);
 
-        this.createConsoleFormat = (loggerName?: string) => {
-            let params = [
-                colorize(),
-                errors({stack: true}),
-                timeFormat,
-                logFormat,
-            ];
-
-            if (loggerName) {
-                params = [...params, label({label: loggerName})];
-            }
-
-            return combine(...params);
-        };
+        this.createConsoleFormat = (loggerName?: string) => combine(
+            colorize(),
+            errors({stack: true}),
+            timeFormat,
+            logFormat,
+            label({
+                label: loggerName ?? '',
+                message: Boolean(loggerName),
+            }),
+        );
     }
 
     createLogger(loggerName?: string): winston.Logger {
