@@ -1,8 +1,8 @@
-import colorLog from 'node-color-log'
+import colorLog from 'node-color-log';
 
-//#region types
+// #region types
 
-type LogType = 'log' | 'info' | 'warn' | 'error'
+type LogType = 'log' | 'info' | 'warn' | 'error';
 
 interface LocalDateTime {
     date: string
@@ -22,12 +22,12 @@ interface LogObject extends LogOptions {
     localDateTime: LocalDateTime
 }
 
-//#endregion
+// #endregion
 
 export default class Logger {
     tag: string;
     BOT: any | null;
-    ADMIN_ID: number | null
+    ADMIN_ID: number | null;
 
     constructor(tag: string, BOT?: any, ADMIN_ID?: number) {
         this.tag = tag;
@@ -43,7 +43,7 @@ export default class Logger {
             isAlertAdmin: options.type === 'error' || !!options.isAlertAdmin,
             tag: this.tag,
             localDateTime: this.getLocalDateTime(),
-        }
+        };
         this.logToConsole(logObject);
 
         if (!this.BOT && !this.ADMIN_ID) {
@@ -60,19 +60,19 @@ export default class Logger {
         return {
             date: rawDate.toLocaleDateString('ru'),
             time: rawDate.toLocaleTimeString('ru'),
-            timestamp: Date.now()
-        }
+            timestamp: Date.now(),
+        };
     }
 
     private logToConsole(logObject: LogObject): void {
-        const message = `[${logObject.tag}] > ${logObject.localDateTime.time} | ${logObject.value}`
+        const message = `[${logObject.tag}] > ${logObject.localDateTime.time} | ${logObject.value}`;
         const typeMap = {
-            'log': () => colorLog.color('white').log(message),
-            'info': () => colorLog.color('blue').log(message),
-            'warn': () => colorLog.color('yellow').log(message),
-            'error': () => colorLog.color('red').log(message),
-        }
-        typeMap[logObject.type || 'log']()
+            log: () => colorLog.color('white').log(message),
+            info: () => colorLog.color('blue').log(message),
+            warn: () => colorLog.color('yellow').log(message),
+            error: () => colorLog.color('red').log(message),
+        };
+        typeMap[logObject.type || 'log']();
     }
 
     private logToStore(logObject: LogObject): void {
@@ -80,7 +80,9 @@ export default class Logger {
     }
 
     private async logToAdmin(logObject: LogObject): Promise<void> {
-        const {type, tag, isAlertAdmin, value} = logObject;
+        const {
+            type, tag, isAlertAdmin, value,
+        } = logObject;
         if (isAlertAdmin) {
             await this.BOT.sendMessage(this.ADMIN_ID, `‼ [${type}] [${tag}] ${value}`);
         }

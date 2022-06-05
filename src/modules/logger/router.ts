@@ -11,7 +11,7 @@ export default function createRouter(logger: winston.Logger) {
         req,
         res,
     ) => {
-        logger.log(req.body);
+        await logger.log(req.body);
         res.json('ok');
     });
 

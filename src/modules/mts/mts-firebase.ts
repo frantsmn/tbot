@@ -1,4 +1,4 @@
-import Logger from '../../modules/logger/logger'
+import Logger from '../logger/logger'
 
 export default class MtsFirebase {
     FIREBASE: FirebaseFirestore.Firestore

@@ -1,5 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api';
-import Logger from './modules/logger/logger'
+import Logger from './modules/logger/logger';
 import {ADMIN_KEYBOARD, USER_KEYBOARD} from './app-keyboards';
 
 const logger = new Logger('app-controller');
@@ -18,35 +18,34 @@ const startMessage = `🐸 Привет!
 
 export default class AppController {
     constructor(BOT: TelegramBot, FIREBASE: FirebaseFirestore.Firestore, ADMIN_ID: number) {
-
         // Приветствие
-        BOT.onText(/\/start/, async msg => {
+        BOT.onText(/\/start/, async (msg) => {
             if (msg.chat.id === ADMIN_ID) {
-                await BOT.sendMessage(msg.chat.id, `🐸 Ква, Создатель!`, {
-                    parse_mode: "Markdown",
-                    reply_markup: ADMIN_KEYBOARD
+                await BOT.sendMessage(msg.chat.id, '🐸 Ква, Создатель!', {
+                    parse_mode: 'Markdown',
+                    reply_markup: ADMIN_KEYBOARD,
                 });
             } else {
                 await BOT.sendMessage(
                     msg.chat.id,
                     startMessage,
                     {
-                        parse_mode: "Markdown",
-                        reply_markup: USER_KEYBOARD
-                    }
+                        parse_mode: 'Markdown',
+                        reply_markup: USER_KEYBOARD,
+                    },
                 );
             }
         });
 
         // Отправка сообщения через бота: @id Text...
-        BOT.onText(/@([0-9]*)(.*)/, async (msg, match) => {
-            let id = match[1];
-            let text = match[2];
+        BOT.onText(/@(\d*)(.*)/, async (msg, match) => {
+            const id = match[1];
+            const text = match[2];
             await BOT.sendMessage(id, text);
         });
 
         // Логгирование сообщений пользователей
-        BOT.on("message", async msg => {
+        BOT.on('message', async (msg) => {
             if (msg.from.id === ADMIN_ID) return;
 
             logger.log({

@@ -1,7 +1,7 @@
-import CurrencyController from './currency-controller'
+import CurrencyController from './currency-controller';
 
 export default class Currency {
     constructor(BOT) {
-        new CurrencyController(BOT)
+        new CurrencyController(BOT);
     }
 }

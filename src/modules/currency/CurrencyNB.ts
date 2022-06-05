@@ -1,13 +1,13 @@
-import schedule from "node-schedule";
-import fetch from "node-fetch";
-import Logger from '../../modules/logger/logger'
+import schedule from 'node-schedule';
+import fetch from 'node-fetch';
+import Logger from '../logger/logger';
 
 export default class CurrencyNB {
-    logger: any
-    url: string
-    urlParams: URLSearchParams
-    currCodes: Array<String>
-    #rates: null | any
+    logger: any;
+    url: string;
+    urlParams: URLSearchParams;
+    currCodes: Array<String>;
+    #rates: null | any;
 
     constructor({currCodes}) {
         this.logger = new Logger('CurrencyNB');
@@ -18,21 +18,21 @@ export default class CurrencyNB {
 
         (async function (context) {
             await context.update();
-        })(this);
+        }(this));
 
-        schedule.scheduleJob({hour: 0, minute: 5}, async () => await this.update());
-        schedule.scheduleJob({hour: 6, minute: 5}, async () => await this.update());
-        schedule.scheduleJob({hour: 12, minute: 5}, async () => await this.update());
-        schedule.scheduleJob({hour: 18, minute: 5}, async () => await this.update());
+        schedule.scheduleJob({hour: 0, minute: 5}, () => this.update());
+        schedule.scheduleJob({hour: 6, minute: 5}, () => this.update());
+        schedule.scheduleJob({hour: 12, minute: 5}, () => this.update());
+        schedule.scheduleJob({hour: 18, minute: 5}, () => this.update());
     }
 
     async request(): Promise<Array<object>> {
         try {
             const url = new URL(this.url);
             const params = new URLSearchParams(this.urlParams);
-            const response = await fetch(url + '?' + params);
+            const response = await fetch(`${url}?${params}`);
 
-            return await response.json();
+            return response.json();
         } catch (error) {
             this.logger.log({
                 value: `Ошибка запроса к www.nbrb.by/API/ExRates/Rates\n${error}`,
@@ -65,7 +65,7 @@ export default class CurrencyNB {
      */
     get rates() {
         return this.#rates
-            ? this.#rates.filter((rate) => this.currCodes.includes(rate['Cur_Abbreviation']))
+            ? this.#rates.filter((rate) => this.currCodes.includes(rate.Cur_Abbreviation))
             : null;
     }
 }

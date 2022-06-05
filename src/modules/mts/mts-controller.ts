@@ -1,5 +1,5 @@
-import MtsModel from './mts-model'
-import Logger from '../../modules/logger/logger'
+import MtsModel from './mts-model';
+import Logger from '../logger/logger';
 
 export default class MtsController {
     constructor(BOT, MTS_FIREBASE, ADMIN_ID) {
@@ -10,14 +10,14 @@ export default class MtsController {
                 const userAccounts = await MTS_FIREBASE.getMtsAccountsByUserId(msg.from.id);
 
                 if (!userAccounts.length) {
-                    await BOT.sendMessage(msg.from.id, `🐸 Я не знаю ваш логин и пароль от кабинета MTS`);
+                    await BOT.sendMessage(msg.from.id, '🐸 Я не знаю ваш логин и пароль от кабинета MTS');
 
                     return;
                 }
 
                 await sendBalanceMessages(userAccounts, msg.from.id);
                 logger.log({
-                    value: `Сообщения с балансом отправлены`,
+                    value: 'Сообщения с балансом отправлены',
                     type: 'info',
                     isAlertAdmin: true,
                 });
@@ -28,14 +28,14 @@ export default class MtsController {
                     isAlertAdmin: true,
                 });
 
-                await BOT.sendMessage(msg.from.id, `🐸 Упс... Я сломалась!`);
+                await BOT.sendMessage(msg.from.id, '🐸 Упс... Я сломалась!');
             }
         });
 
-        BOT.on("callback_query", async (response) => {
-            if (JSON.parse(response.data).query_id === "mts") {
+        BOT.on('callback_query', async (response) => {
+            if (JSON.parse(response.data).query_id === 'mts') {
                 BOT.answerCallbackQuery(response.id, {
-                    text: `Обновляю данные...\nЭто может занять несколько секунд`,
+                    text: 'Обновляю данные...\nЭто может занять несколько секунд',
                     cache_time: 120,
                     show_alert: true,
                 });
@@ -48,7 +48,7 @@ export default class MtsController {
                     await MTS_FIREBASE.setMtsAccounts(userAccounts);
 
                     logger.log({
-                        value: `Сообщения с принудительно обновленным балансом отправлены`,
+                        value: 'Сообщения с принудительно обновленным балансом отправлены',
                         type: 'info',
                         isAlertAdmin: true,
                     });

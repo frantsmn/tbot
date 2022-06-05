@@ -1,5 +1,5 @@
-import CurrencyNB from "./CurrencyNB";
-import Logger from "../logger/logger";
+import CurrencyNB from './CurrencyNB';
+import Logger from '../logger/logger';
 
 export default class CurrencyFacade {
     private static logger: Logger = new Logger('CurrencyFacade');
@@ -24,9 +24,7 @@ https://select.by/kursy-valyut`;
             return this.errorMessage;
         }
 
-        return rates.map(rate =>
-            `${rate['Cur_Scale']} ${rate['Cur_Abbreviation']} • ${rate['Cur_OfficialRate']} BYN`
-        ).join('\n\n');
+        return rates.map((rate) => `${rate.Cur_Scale} ${rate.Cur_Abbreviation} • ${rate.Cur_OfficialRate} BYN`).join('\n\n');
     }
 
     /**
@@ -47,18 +45,16 @@ https://select.by/kursy-valyut`;
             return this.errorMessage;
         }
 
-        const abbreviationMap = {'$': 'USD', '€': 'EUR', '₽': 'RUB'};
+        const abbreviationMap = {$: 'USD'};
         const abbreviation = abbreviationMap.hasOwnProperty(abbreviationRaw)
             ? abbreviationMap[abbreviationRaw]
             : abbreviationRaw?.toUpperCase();
 
-        const convertToBYN = (rate, value): string =>
-            `\`${value} ${rate['Cur_Abbreviation']} \` : \` ${Math.round(value * rate['Cur_OfficialRate'] / rate['Cur_Scale'] * 1000) / 1000} BYN\``;
-        const convertToCurrency = (rate, value): string =>
-            `\`${value} BYN \` : \` ${Math.round(value / rate['Cur_OfficialRate'] * rate['Cur_Scale'] * 1000) / 1000} ${rate['Cur_Abbreviation']}\``;
+        const convertToBYN = (rate, value): string => `\`${value} ${rate.Cur_Abbreviation} \` : \` ${Math.round(value * rate.Cur_OfficialRate / rate.Cur_Scale * 1000) / 1000} BYN\``;
+        const convertToCurrency = (rate, value): string => `\`${value} BYN \` : \` ${Math.round(value / rate.Cur_OfficialRate * rate.Cur_Scale * 1000) / 1000} ${rate.Cur_Abbreviation}\``;
 
-        const bynStrings = rates.map(rate => convertToBYN(rate, value)).join('\n');
-        const currStrings = rates.map(rate => convertToCurrency(rate, value)).join('\n');
+        const bynStrings = rates.map((rate) => convertToBYN(rate, value)).join('\n');
+        const currStrings = rates.map((rate) => convertToCurrency(rate, value)).join('\n');
 
         switch (abbreviation) {
             case undefined:
@@ -66,7 +62,7 @@ https://select.by/kursy-valyut`;
             case 'BYN':
                 return currStrings;
             default:
-                const rate = rates.find((rate) => rate['Cur_Abbreviation'] === abbreviation);
+                const rate = rates.find((rate) => rate.Cur_Abbreviation === abbreviation);
 
                 return convertToBYN(rate, value);
         }

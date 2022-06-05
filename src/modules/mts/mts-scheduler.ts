@@ -1,19 +1,15 @@
-import schedule from 'node-schedule'
-import Logger from '../../modules/logger/logger'
-import MtsModel from './mts-model'
+import schedule from 'node-schedule';
+import Logger from '../logger/logger';
+import MtsModel from './mts-model';
 
 export default class MtsScheduler {
     constructor(BOT, MTS_FIREBASE, ADMIN_ID) {
         const logger = new Logger('mts-scheduler', BOT, ADMIN_ID);
 
-        schedule.scheduleJob({hour: 5, minute: 10}, updateAccounts);
-        schedule.scheduleJob({hour: 13, minute: 0}, updateAccounts);
-        schedule.scheduleJob({hour: 13, minute: 10}, balanceReminders);
-
         async function updateAccounts() {
             try {
                 logger.log({
-                    value: `⌛ Обновление аккаунтов...`,
+                    value: '⌛ Обновление аккаунтов...',
                     type: 'info',
                 });
 
@@ -28,7 +24,7 @@ export default class MtsScheduler {
                 });
             } finally {
                 logger.log({
-                    value: `⌛ Обновление аккаунтов завершено!`,
+                    value: '⌛ Обновление аккаунтов завершено!',
                     type: 'info',
                 });
             }
@@ -37,17 +33,18 @@ export default class MtsScheduler {
         async function balanceReminders() {
             try {
                 logger.log({
-                    value: `⌛ Рассылка напоминаний о пополнении баланса...`,
+                    value: '⌛ Рассылка напоминаний о пополнении баланса...',
                     type: 'info',
                 });
 
                 const userAccounts = await MTS_FIREBASE.getAllMtsAccounts();
-                userAccounts.forEach(account => {
-                    if (account.isLowBalance)
-                        account.users.forEach(user => {
+                userAccounts.forEach((account) => {
+                    if (account.isLowBalance) {
+                        account.users.forEach((user) => {
                             const message = MtsModel.createMessage(account);
                             BOT.sendMessage(user, message.text, message.options);
-                        })
+                        });
+                    }
                 });
             } catch (error) {
                 logger.log({
@@ -57,10 +54,14 @@ export default class MtsScheduler {
                 });
             } finally {
                 logger.log({
-                    value: `⌛ Рассылка напоминаний о пополнении баланса завершена!`,
+                    value: '⌛ Рассылка напоминаний о пополнении баланса завершена!',
                     type: 'info',
                 });
             }
         }
+
+        schedule.scheduleJob({hour: 5, minute: 10}, updateAccounts);
+        schedule.scheduleJob({hour: 13, minute: 0}, updateAccounts);
+        schedule.scheduleJob({hour: 13, minute: 10}, balanceReminders);
     }
 }
