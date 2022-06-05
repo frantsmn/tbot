@@ -3,7 +3,7 @@ import createRouter from './router';
 
 export default class LogHub {
     constructor(loggerFactory) {
-        const port = 990;
+        const port = 3030;
         const app = express();
         const logger = loggerFactory.createLogger('LogHub');
         const router = createRouter(logger);
