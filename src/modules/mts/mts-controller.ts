@@ -1,4 +1,14 @@
-export default function mtsController(BOT, MTS_FIREBASE, mtsScraper, logger) {
+import type TelegramBot from 'node-telegram-bot-api';
+import type winston from 'winston';
+import type MtsFirebase from './MtsFirebase';
+import type MtsScraper from './MtsScraper';
+
+export default function mtsController(
+    BOT: TelegramBot,
+    MTS_FIREBASE: MtsFirebase,
+    mtsScraper: MtsScraper,
+    logger: winston.Logger,
+) {
     /**
      * Отправить сообщения с текущим балансом
      * @param userAccounts - массив аккаунтов
@@ -42,14 +52,14 @@ export default function mtsController(BOT, MTS_FIREBASE, mtsScraper, logger) {
             return;
         }
 
-        BOT.answerCallbackQuery(response.id, {
+        await BOT.answerCallbackQuery(response.id, {
             text: 'Обновляю данные...\nЭто может занять несколько секунд',
             cache_time: 120,
             show_alert: true,
         });
 
         try {
-            const userAccounts = await MTS_FIREBASE
+            const userAccounts: Array<Account> = await MTS_FIREBASE
                 .getMtsAccountsByUserId(response.message.chat.id);
 
             await mtsScraper.updateAccounts(userAccounts);

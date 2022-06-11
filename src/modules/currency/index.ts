@@ -1,9 +1,16 @@
-import CurrencyController from './currency-controller';
+import CurrencyNB from './CurrencyNB';
+import CurrencyFacade from './CurrencyFacade';
+import currencyController from './currency-controller';
 
-export default function currency(BOT) {
-    // todo: достать сюда кишки из CurrecyController
-    // todo: и инициализировать их тут
-    // todo: и в них прокинуть логгер
+export default function currency(BOT, loggerFactory) {
+    const currencyNB = new CurrencyNB(
+        {currCodes: ['USD', 'EUR', 'RUB']},
+        loggerFactory.createLogger('CurrencyNB'),
+    );
+    const currencyFacade = new CurrencyFacade(
+        {currencyNB},
+        loggerFactory.createLogger('CurrencyFacade'),
+    );
 
-    new CurrencyController(BOT);
+    currencyController(BOT, currencyFacade);
 }

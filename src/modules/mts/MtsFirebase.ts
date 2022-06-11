@@ -9,7 +9,7 @@ export default class MtsFirebase {
         this.logger = logger;
     }
 
-    async getMtsAccountsByUserId(userId) {
+    async getMtsAccountsByUserId(userId): Promise<FirebaseFirestore.DocumentData[any]> {
         const collection = await this.FIREBASE.collection('mts').where('users', 'array-contains', userId).get();
 
         this.logger.info(`Получение аккаунтов для ${userId} из firebase`);
@@ -17,7 +17,7 @@ export default class MtsFirebase {
         return collection.docs.map((account) => account.data());
     }
 
-    async getAllMtsAccounts() {
+    async getAllMtsAccounts(): Promise<FirebaseFirestore.DocumentData[any]> {
         const collection = await this.FIREBASE.collection('mts').get();
 
         this.logger.info('Получение всех аккаунтов из firebase');

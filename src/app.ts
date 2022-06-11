@@ -4,7 +4,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import LoggerFactory from './LoggerFactory/LoggerFactory';
 import firebase from './connect-firebase';
 
-import logHub from './modules/logger/index';
+import logEndpoint from './modules/logEndpoint/index';
 import currency from './modules/currency/index';
 import mts from './modules/mts/index';
 import appController from './app-controller';
@@ -24,7 +24,7 @@ const loggerFactory = new LoggerFactory({
     adminId: ADMIN_ID,
 });
 
-logHub(loggerFactory);
-currency(BOT); // todo + new logger
+logEndpoint(loggerFactory);
+currency(BOT, loggerFactory);
 mts(BOT, FIREBASE, loggerFactory);
 appController(BOT, ADMIN_ID, loggerFactory);

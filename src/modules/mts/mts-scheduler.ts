@@ -38,6 +38,6 @@ export default function mtsScheduler(BOT, MTS_FIREBASE, mtsScraper, logger) {
     }
 
     schedule.scheduleJob({hour: 5, minute: 10}, updateAccounts);
-    schedule.scheduleJob({hour: 13, minute: 0}, updateAccounts);
-    schedule.scheduleJob({hour: 13, minute: 10}, balanceReminders);
+    schedule.scheduleJob({hour: 12, minute: 0}, updateAccounts);
+    schedule.scheduleJob({hour: 12, minute: 30}, balanceReminders);
 }

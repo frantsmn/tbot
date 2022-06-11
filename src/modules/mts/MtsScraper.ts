@@ -30,7 +30,7 @@ export default class MtsScraper {
      * @returns {Promise<Array<Account>>} промис с массивом аккаунтов
      */
     async updateAccounts(array: Array<Account>): Promise<Array<Account>> {
-        const browser = await this.openBrowser();
+        const browser = await MtsScraper.openBrowser();
 
         // eslint-disable-next-line no-restricted-syntax
         for await (let account of array) {
@@ -39,7 +39,8 @@ export default class MtsScraper {
                 this.logger.info(`Обновление аккаунта [${account.login}]`);
 
                 const accountStatusText: string = await this.getAccountStatusText(browser, account);
-                const accountStatus: AccountStatus = this.parseAccountStatusText(accountStatusText);
+                const accountStatus: AccountStatus = MtsScraper
+                    .parseAccountStatusText(accountStatusText);
 
                 if (accountStatus.balance) {
                     account = Object.assign(account, accountStatus, {
@@ -106,7 +107,7 @@ export default class MtsScraper {
      * Кросплатформенный метод открытия браузера
      * @private
      */
-    async openBrowser() {
+    static async openBrowser() {
         try {
             if (process.platform === 'linux') {
                 return await puppeteer.launch({
@@ -126,7 +127,6 @@ export default class MtsScraper {
      * @param browser
      * @param {Account} account
      * @returns {String}
-     * @private
      */
     async getAccountStatusText(browser: puppeteer.Browser, account: Account): Promise<string> {
         let statusText = '';
@@ -213,9 +213,8 @@ export default class MtsScraper {
      * Парсинг текста сайта в объект AccountStatus
      * @param {String} text
      * @returns {AccountStatus}
-     * @private
      */
-    parseAccountStatusText(text: string): AccountStatus {
+    static parseAccountStatusText(text: string): AccountStatus {
         const regExBalance = /Ваш текущий баланс: (\d+,*\d*) руб/m;
         const regExTraffic = /: (\d+,*\d*)\s*(Мб|Mb)/mi;
         const regExMinutes = /: (\d+,*\d*)\s*(Мин|Min)/mi;

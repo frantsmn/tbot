@@ -1,25 +1,24 @@
+import type winston from 'winston';
 import CurrencyNB from './CurrencyNB';
-import Logger from '../logger/logger';
 
 export default class CurrencyFacade {
-    private static logger: Logger = new Logger('CurrencyFacade');
-    private static currencyNB: CurrencyNB = new CurrencyNB({currCodes: ['USD', 'EUR', 'RUB']});
-    private static errorMessage: string = `⚠️Произошла ошибка! НБРБ зажлобил данные по курсам\n
-Воспользуйтесь пока сайтом:
-https://select.by/kursy-valyut`;
+    currencyNB: CurrencyNB;
+    logger: winston.Logger;
+    private errorMessage: string = '⚠️Произошла ошибка! НБРБ зажлобил данные по курсам\nВоспользуйтесь пока сайтом:\nhttps://select.by/kursy-valyut';
+
+    constructor(sources, logger) {
+        this.currencyNB = sources.currencyNB;
+        this.logger = logger;
+    }
 
     /**
      * Возвращает курсы валют в виде готового сообщения
      */
-    static async getCurrency(): Promise<string> {
+    async getCurrency(): Promise<string> {
         const {rates} = this.currencyNB;
 
         if (!rates) {
-            this.logger.log({
-                value: 'Не смог вернуть сообщение с курсами валют. Отсутствуют актуальные курсы',
-                type: 'error',
-                isAlertAdmin: true,
-            });
+            this.logger.error('Не смог вернуть сообщение с курсами валют. Отсутствуют актуальные курсы');
 
             return this.errorMessage;
         }
@@ -32,24 +31,21 @@ https://select.by/kursy-valyut`;
      * @param value - объем переводимой валюты
      * @param abbreviationRaw - буквенное обозначение переводимой валюты
      */
-    static async getExchange(value: number, abbreviationRaw?: '$' | 'USD' | '€' | 'EUR' | '₽' | 'RUB') {
+    async getExchange(value: number, abbreviationRaw?: '$' | 'USD' | '€' | 'EUR' | '₽' | 'RUB') {
         const {rates} = this.currencyNB;
 
         if (!rates) {
-            this.logger.log({
-                value: 'Не смог вернуть сообщение с переводом валют. Отсутствуют актуальные курсы',
-                type: 'error',
-                isAlertAdmin: true,
-            });
+            this.logger.error('Не смог вернуть сообщение с переводом валют. Отсутствуют актуальные курсы');
 
             return this.errorMessage;
         }
 
         const abbreviationMap = {$: 'USD'};
-        const abbreviation = abbreviationMap.hasOwnProperty(abbreviationRaw)
+        const abbreviation = abbreviationRaw in abbreviationMap
             ? abbreviationMap[abbreviationRaw]
             : abbreviationRaw?.toUpperCase();
 
+        /* eslint no-mixed-operators: 0 */
         const convertToBYN = (rate, value): string => `\`${value} ${rate.Cur_Abbreviation} \` : \` ${Math.round(value * rate.Cur_OfficialRate / rate.Cur_Scale * 1000) / 1000} BYN\``;
         const convertToCurrency = (rate, value): string => `\`${value} BYN \` : \` ${Math.round(value / rate.Cur_OfficialRate * rate.Cur_Scale * 1000) / 1000} ${rate.Cur_Abbreviation}\``;
 
