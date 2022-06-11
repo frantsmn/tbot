@@ -133,7 +133,7 @@ export default class MtsScraper {
         const page = await browser.newPage();
 
         // Переход на страницу входа
-        this.logger.info('Переход на страницу входа');
+        this.logger.silly('Переход на страницу входа');
         try {
             await page.goto('https://ihelper.mts.by/SelfCarePda/Security.mvc/LogOn', {waitUntil: 'domcontentloaded'});
         } catch (error) {
@@ -143,7 +143,7 @@ export default class MtsScraper {
         await page.waitForTimeout(500);
 
         // Подстановка логина и пароля
-        this.logger.info('Подстановка логина и пароля');
+        this.logger.silly('Подстановка логина и пароля');
         await page.evaluate(({login, password}) => {
             const usernameInput = document.getElementsByName('username')[0] as HTMLInputElement;
             const passwordInput = document.getElementsByName('password')[0] as HTMLInputElement;
@@ -160,7 +160,7 @@ export default class MtsScraper {
         await page.waitForTimeout(500);
 
         // Попытка входа в личный кабинет
-        this.logger.info('Попытка входа в личный кабинет');
+        this.logger.silly('Попытка входа в личный кабинет');
         await page.evaluate(() => {
             const formElement = document.querySelector('form') as HTMLFormElement;
             if (formElement instanceof HTMLFormElement) {
@@ -185,7 +185,7 @@ export default class MtsScraper {
         });
 
         // Переход на страницу статуса
-        this.logger.info('Переход на страницу статуса');
+        this.logger.silly('Переход на страницу статуса');
         try {
             await page.goto('https://ihelper.mts.by/SelfCarePda/Account.mvc/Status', {waitUntil: 'domcontentloaded'});
         } catch (error) {
@@ -195,7 +195,7 @@ export default class MtsScraper {
         await page.waitForTimeout(2000);
 
         // Чтение данных о статусе
-        this.logger.info('Чтение данных о статусе');
+        this.logger.silly('Чтение данных о статусе');
         statusText = await page.evaluate(() => {
             const mainContainer = document.querySelector('.main') as HTMLElement;
             if (mainContainer instanceof HTMLElement) {

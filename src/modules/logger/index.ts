@@ -7,9 +7,7 @@ export default function logHub(loggerFactory) {
     const logger = loggerFactory.createLogger('LogHub');
     const router = createRouter(logger);
 
-    app.listen(port, () => logger.info({
-        message: `LogHub started on port ${port}`,
-    }));
+    app.listen(port, () => logger.info(`LogHub started on port ${port}`));
 
     app.use(express.json());
     app.use(router);
