@@ -1,12 +1,20 @@
-import MtsFirebase from './mts-firebase';
-import MtsController from './mts-controller';
-import MtsScheduler from './mts-scheduler';
+import MtsFirebase from './MtsFirebase';
+import MtsScraper from './MtsScraper';
+import mtsController from './mts-controller';
+import mtsScheduler from './mts-scheduler';
 
-export default class Mts {
-    constructor(BOT, FIREBASE, loggerFactory) {
-        const MTS_FIREBASE = new MtsFirebase(FIREBASE, loggerFactory);
+export default function mts(BOT, FIREBASE, loggerFactory) {
+    const firebaseLogger = loggerFactory.createLogger('MtsFirebase');
+    const scraperLogger = loggerFactory.createLogger('MtsScraper');
+    const controllerLogger = loggerFactory.createLogger('MtsController');
+    const schedulerLogger = loggerFactory.createLogger('MtsScheduler');
 
-        new MtsController(BOT, MTS_FIREBASE, loggerFactory);
-        new MtsScheduler(BOT, MTS_FIREBASE, loggerFactory);
-    }
+    const MTS_FIREBASE = new MtsFirebase(FIREBASE, firebaseLogger);
+    const mtsScraper = new MtsScraper({
+        minUpdateInterval: 600000,
+        minBalance: 0.9,
+    }, scraperLogger);
+
+    mtsController(BOT, MTS_FIREBASE, mtsScraper, controllerLogger);
+    mtsScheduler(BOT, MTS_FIREBASE, mtsScraper, schedulerLogger);
 }

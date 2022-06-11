@@ -55,6 +55,7 @@ https://select.by/kursy-valyut`;
 
         const bynStrings = rates.map((rate) => convertToBYN(rate, value)).join('\n');
         const currStrings = rates.map((rate) => convertToCurrency(rate, value)).join('\n');
+        const rate = rates.find((rate) => rate.Cur_Abbreviation === abbreviation);
 
         switch (abbreviation) {
             case undefined:
@@ -62,8 +63,6 @@ https://select.by/kursy-valyut`;
             case 'BYN':
                 return currStrings;
             default:
-                const rate = rates.find((rate) => rate.Cur_Abbreviation === abbreviation);
-
                 return convertToBYN(rate, value);
         }
     }

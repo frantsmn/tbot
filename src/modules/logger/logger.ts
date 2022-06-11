@@ -5,21 +5,21 @@ import colorLog from 'node-color-log';
 type LogType = 'log' | 'info' | 'warn' | 'error';
 
 interface LocalDateTime {
-    date: string
-    time: string
-    timestamp: number
+    date: string;
+    time: string;
+    timestamp: number;
 }
 
 interface LogOptions {
-    type?: LogType
-    value: string | number | unknown
-    isAlertAdmin?: boolean
+    type?: LogType;
+    value: string | number | unknown;
+    isAlertAdmin?: boolean;
     // isSaveToStore?: boolean
 }
 
 interface LogObject extends LogOptions {
-    tag: string
-    localDateTime: LocalDateTime
+    tag: string;
+    localDateTime: LocalDateTime;
 }
 
 // #endregion
@@ -51,10 +51,9 @@ export default class Logger {
         }
 
         this.logToAdmin(logObject);
-        // this.logToStore(logObject);
     }
 
-    private getLocalDateTime(): LocalDateTime {
+    getLocalDateTime(): LocalDateTime {
         const rawDate = new Date();
 
         return {
@@ -64,7 +63,7 @@ export default class Logger {
         };
     }
 
-    private logToConsole(logObject: LogObject): void {
+    logToConsole(logObject: LogObject): void {
         const message = `[${logObject.tag}] > ${logObject.localDateTime.time} | ${logObject.value}`;
         const typeMap = {
             log: () => colorLog.color('white').log(message),
@@ -73,10 +72,6 @@ export default class Logger {
             error: () => colorLog.color('red').log(message),
         };
         typeMap[logObject.type || 'log']();
-    }
-
-    private logToStore(logObject: LogObject): void {
-        // console.log('[logger] > //TODO: Log to store', logObject);
     }
 
     private async logToAdmin(logObject: LogObject): Promise<void> {

@@ -1,5 +1,5 @@
-import express from 'express';
 import type winston from 'winston';
+import express from 'express';
 
 export default function createRouter(logger: winston.Logger) {
     const router = express.Router();

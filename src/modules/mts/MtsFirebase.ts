@@ -1,13 +1,12 @@
 import type winston from 'winston';
-import type LoggerFactory from '../../LoggerFactory/LoggerFactory';
 
 export default class MtsFirebase {
     FIREBASE: FirebaseFirestore.Firestore;
     private logger: winston.Logger;
 
-    constructor(FIREBASE: FirebaseFirestore.Firestore, loggerFactory: LoggerFactory) {
+    constructor(FIREBASE: FirebaseFirestore.Firestore, logger) {
         this.FIREBASE = FIREBASE;
-        this.logger = loggerFactory.createLogger('MtsFirebase');
+        this.logger = logger;
     }
 
     async getMtsAccountsByUserId(userId) {

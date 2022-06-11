@@ -1,2 +1,2 @@
-todo: Переименовать директорию в loghub
-todo: mts-model перевести на новый логгер
+todo: Переименовать директорию в logEndpoint
+todo: проверить везде logger.info('') на string param

@@ -3,10 +3,11 @@ import dotenv from 'dotenv';
 import TelegramBot from 'node-telegram-bot-api';
 import LoggerFactory from './LoggerFactory/LoggerFactory';
 import firebase from './connect-firebase';
-import Currency from './modules/currency/index';
-import Mts from './modules/mts/index';
-import LogHub from './modules/logger/index';
-import AppController from './app-controller';
+
+import logHub from './modules/logger/index';
+import currency from './modules/currency/index';
+import mts from './modules/mts/index';
+import appController from './app-controller';
 
 const ENV_PATH = path.resolve(require('os').homedir(), '.tbot/.env');
 const KEYS_PATH = path.resolve(require('os').homedir(), '.tbot/keys/');
@@ -23,7 +24,7 @@ const loggerFactory = new LoggerFactory({
     adminId: ADMIN_ID,
 });
 
-new LogHub(loggerFactory);
-new Currency(BOT); // todo new logger
-new Mts(BOT, FIREBASE, loggerFactory); // + new logger
-new AppController(BOT, ADMIN_ID, loggerFactory); // + new logger
+logHub(loggerFactory);
+currency(BOT); // todo + new logger
+mts(BOT, FIREBASE, loggerFactory);
+appController(BOT, ADMIN_ID, loggerFactory);
