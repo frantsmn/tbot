@@ -35,7 +35,7 @@ export default class TelegramBotTransport extends Transport {
             warn: '⚠️',
             error: '🔥',
         };
-        const disableNotification = isTgSilent && level !== 'error';
+        const disableNotification = isTgSilent;
         const messageTimestamp = eventTimestamp ? `${new Date(eventTimestamp).toLocaleTimeString()}\n` : '';
         const messageService = service ? `[[${service}]] > ` : '';
         const messageLabel = label ? `[[${label}]]\n` : '';
