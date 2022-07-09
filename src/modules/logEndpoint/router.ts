@@ -7,7 +7,7 @@ export default function createRouter(logger: winston.Logger) {
     /**
      * Log endpoint
      */
-    router.get('/log', (
+    router.all('/log', (
         req,
         res,
     ) => {

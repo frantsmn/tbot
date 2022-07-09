@@ -31,7 +31,7 @@ export default class LoggerFactory {
                 timestamp,
                 /**
                  * Кастомное опциональное поле фактического времени события
-                 * Если приходит пустое, то будет показан 'timestamp'
+                 * Если приходит пустое, то будет показан 'timestamp' только в консоли
                  */
                 eventTimestamp,
                 /**
