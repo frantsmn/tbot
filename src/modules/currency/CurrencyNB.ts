@@ -8,6 +8,7 @@ export default class CurrencyNB {
     urlParams: URLSearchParams;
     currCodes: Array<String>;
     #rates: null | any;
+    #lastUpdateDate: null | Date;
 
     constructor({currCodes}, logger) {
         this.logger = logger;
@@ -15,6 +16,7 @@ export default class CurrencyNB {
         this.urlParams = new URLSearchParams({Periodicity: '0'});
         this.currCodes = currCodes ?? ['USD', 'EUR', 'RUB'];
         this.#rates = null;
+        this.#lastUpdateDate = null;
 
         this.update().then();
 
@@ -46,6 +48,7 @@ export default class CurrencyNB {
         }
 
         this.#rates = result;
+        this.#lastUpdateDate = new Date();
 
         this.logger.info('Курсы НБРБ обновлены');
     }
@@ -57,5 +60,12 @@ export default class CurrencyNB {
         return this.#rates
             ? this.#rates.filter((rate) => this.currCodes.includes(rate.Cur_Abbreviation))
             : null;
+    }
+
+    /**
+     * Время последнего обновления
+     */
+    get lastUpdateDate() {
+        return this.#lastUpdateDate;
     }
 }

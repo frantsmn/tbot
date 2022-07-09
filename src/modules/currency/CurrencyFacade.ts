@@ -1,10 +1,11 @@
 import type winston from 'winston';
+import isToday from 'helpers/isToday';
 import CurrencyNB from './CurrencyNB';
 
 export default class CurrencyFacade {
     currencyNB: CurrencyNB;
     logger: winston.Logger;
-    private errorMessage: string = '⚠️Произошла ошибка! НБРБ зажлобил данные по курсам\nВоспользуйтесь пока сайтом:\nhttps://select.by/kursy-valyut';
+    private errorMessage: string = '⚠️Произошла ошибка! Банк зажлобил данные по курсам\nВоспользуйтесь пока сайтом:\nhttps://select.by/kursy-valyut';
 
     constructor(sources, logger) {
         this.currencyNB = sources.currencyNB;
@@ -15,9 +16,9 @@ export default class CurrencyFacade {
      * Возвращает курсы валют в виде готового сообщения
      */
     async getCurrency(): Promise<string> {
-        const {rates} = this.currencyNB;
+        const {rates, lastUpdateDate} = this.currencyNB;
 
-        if (!rates) {
+        if (!rates || !isToday(lastUpdateDate)) {
             this.logger.error('Не смог вернуть сообщение с курсами валют. Отсутствуют актуальные курсы');
 
             return this.errorMessage;
@@ -32,9 +33,9 @@ export default class CurrencyFacade {
      * @param abbreviationRaw - буквенное обозначение переводимой валюты
      */
     async getExchange(value: number, abbreviationRaw?: '$' | 'USD' | '€' | 'EUR' | '₽' | 'RUB') {
-        const {rates} = this.currencyNB;
+        const {rates, lastUpdateDate} = this.currencyNB;
 
-        if (!rates) {
+        if (!rates || !isToday(lastUpdateDate)) {
             this.logger.error('Не смог вернуть сообщение с переводом валют. Отсутствуют актуальные курсы');
 
             return this.errorMessage;
