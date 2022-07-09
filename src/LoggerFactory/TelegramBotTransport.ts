@@ -35,7 +35,6 @@ export default class TelegramBotTransport extends Transport {
             warn: '⚠️',
             error: '🔥',
         };
-        const disableNotification = isTgSilent;
         const messageTimestamp = eventTimestamp ? `${new Date(eventTimestamp).toLocaleTimeString()}\n` : '';
         const messageService = service ? `[[${service}]] > ` : '';
         const messageLabel = label ? `[[${label}]]\n` : '';
@@ -43,7 +42,7 @@ export default class TelegramBotTransport extends Transport {
         const botMessage = `${messageLevel}${messageTimestamp}${messageService}${messageLabel}${message}`;
 
         await this.bot.sendMessage(this.adminId, botMessage, {
-            disable_notification: disableNotification,
+            disable_notification: isTgSilent,
             parse_mode: 'Markdown',
         });
 
