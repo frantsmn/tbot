@@ -1,7 +1,7 @@
 import type { ReplyKeyboardMarkup } from 'node-telegram-bot-api';
 
 export const USER_KEYBOARD: ReplyKeyboardMarkup = {
-    keyboard: [[{ text: 'Курсы валют' }], [{ text: 'Баланс MTS' }]],
+    keyboard: [[{ text: 'Курсы валют' }]],
     resize_keyboard: true,
 };
 
