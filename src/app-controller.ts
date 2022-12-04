@@ -1,13 +1,10 @@
 import TelegramBot from 'node-telegram-bot-api';
 import {ADMIN_KEYBOARD, USER_KEYBOARD} from './app-keyboards';
-import type LoggerFactory from './LoggerFactory/LoggerFactory';
 
 export default function appController(
     BOT: TelegramBot,
     ADMIN_ID: number,
-    loggerFactory: LoggerFactory,
 ) {
-    const logger = loggerFactory.createLogger('AppController');
     const startMessage = `🐸 Привет!
 
 Вот что я умею:
@@ -35,6 +32,14 @@ export default function appController(
         }
     });
 
+    // Fallback
+    BOT.onText(/MTS|МТС/gim, async (msg) => {
+        await BOT.sendMessage(msg.chat.id, '🐸 Баланс больше не работает. Воспользуйтесь приложением: https://play.google.com/store/apps/details?id=by.mts.client', {
+            parse_mode: 'Markdown',
+            reply_markup: USER_KEYBOARD,
+        });
+    });
+
     // Отправка сообщения через бота: @id Text...
     BOT.onText(/@(\d*)(.*)/, async (msg, match) => {
         const id = match[1];
@@ -47,11 +52,6 @@ export default function appController(
         if (msg.from.id === ADMIN_ID) {
             return;
         }
-
-        logger.info({
-            message: `Пользователь ${msg.from.first_name} \`${msg.chat.id}\` оставил сообщение`,
-            isTg: true,
-        });
 
         await BOT.forwardMessage(ADMIN_ID, msg.from.id, msg.message_id);
     });

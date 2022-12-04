@@ -1,15 +1,12 @@
-import type winston from 'winston';
 import isToday from 'helpers/isToday';
-import CurrencyNB from './CurrencyNB';
+import CurrencyNbApi from './currency-nb-api';
 
 export default class CurrencyFacade {
-    currencyNB: CurrencyNB;
-    logger: winston.Logger;
+    currencyNB: CurrencyNbApi;
     private errorMessage: string = '⚠️Произошла ошибка! Банк зажлобил данные по курсам\nВоспользуйтесь пока сайтом:\nhttps://select.by/kursy-valyut';
 
-    constructor(sources, logger) {
+    constructor(sources) {
         this.currencyNB = sources.currencyNB;
-        this.logger = logger;
     }
 
     /**
@@ -19,7 +16,7 @@ export default class CurrencyFacade {
         const {rates, lastUpdateDate} = this.currencyNB;
 
         if (!rates || !isToday(lastUpdateDate)) {
-            this.logger.error('Не смог вернуть сообщение с курсами валют. Отсутствуют актуальные курсы');
+            console.error('Не смог вернуть сообщение с курсами валют. Отсутствуют актуальные курсы');
 
             return this.errorMessage;
         }
@@ -36,7 +33,7 @@ export default class CurrencyFacade {
         const {rates, lastUpdateDate} = this.currencyNB;
 
         if (!rates || !isToday(lastUpdateDate)) {
-            this.logger.error('Не смог вернуть сообщение с переводом валют. Отсутствуют актуальные курсы');
+            console.error('Не смог вернуть сообщение с переводом валют. Отсутствуют актуальные курсы');
 
             return this.errorMessage;
         }

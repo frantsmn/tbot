@@ -1,16 +1,10 @@
-import CurrencyNB from './CurrencyNB';
-import CurrencyFacade from './CurrencyFacade';
+import CurrencyNbApi from './currency-nb-api';
+import CurrencyFacade from './currency-facade';
 import currencyController from './currency-controller';
 
-export default function currency(BOT, loggerFactory) {
-    const currencyNB = new CurrencyNB(
-        {currCodes: ['USD', 'EUR', 'RUB']},
-        loggerFactory.createLogger('CurrencyNB'),
-    );
-    const currencyFacade = new CurrencyFacade(
-        {currencyNB},
-        loggerFactory.createLogger('CurrencyFacade'),
-    );
+export default function currency(BOT) {
+    const currencyNB = new CurrencyNbApi({currCodes: ['USD', 'EUR', 'RUB']});
+    const currencyFacade = new CurrencyFacade({currencyNB});
 
     currencyController(BOT, currencyFacade);
 }

@@ -1,17 +1,14 @@
-import type winston from 'winston';
 import schedule from 'node-schedule';
 import fetch from 'node-fetch';
 
-export default class CurrencyNB {
-    logger: winston.Logger;
+export default class CurrencyNbApi {
     url: string;
     urlParams: URLSearchParams;
     currCodes: Array<String>;
     #rates: null | any;
     #lastUpdateDate: null | Date;
 
-    constructor({currCodes}, logger) {
-        this.logger = logger;
+    constructor({currCodes}) {
         this.url = 'https://www.nbrb.by/API/ExRates/Rates';
         this.urlParams = new URLSearchParams({Periodicity: '0'});
         this.currCodes = currCodes ?? ['USD', 'EUR', 'RUB'];
@@ -34,7 +31,7 @@ export default class CurrencyNB {
 
             return response.json();
         } catch (error) {
-            this.logger.error(`Ошибка запроса к www.nbrb.by/API/ExRates/Rates\n${error}`);
+            console.error(`Ошибка запроса к www.nbrb.by/API/ExRates/Rates\n${error}`);
 
             return null;
         }
@@ -50,7 +47,7 @@ export default class CurrencyNB {
         this.#rates = result;
         this.#lastUpdateDate = new Date();
 
-        this.logger.info('Курсы НБРБ обновлены');
+        console.info('Курсы НБРБ обновлены');
     }
 
     /**
